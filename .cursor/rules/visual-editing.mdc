@@ -1,0 +1,397 @@
+# Visual Editing Rules for Sanity Schema UI Components
+
+## 🎯 Component Creation Guidelines
+
+### ✅ DO: Follow Exact Visual Design
+
+- **ALWAYS** match the visual design exactly as shown
+- **NEVER** hardcode any text, colors, or styling
+- **ALWAYS** make all visual elements editable through Sanity
+- **ALWAYS** create a preview image for the component
+- **ALWAYS** integrate the component into the page schema
+
+### ✅ DO: Create Preview Images
+
+- **ALWAYS** create a preview image that shows the component in action
+- **ALWAYS** save it as `/public/sanity/preview/[component-name].jpg`
+- **ALWAYS** reference it in the schema's `insertMenu` options
+- **ALWAYS** make the preview image representative of the actual component
+
+### ✅ DO: Complete Integration
+
+- **ALWAYS** add the component to `sanity/schema.ts`
+- **ALWAYS** add the component to `components/blocks/index.tsx`
+- **ALWAYS** add the component to the page schema's `blocks` field
+- **ALWAYS** create proper GROQ queries
+- **ALWAYS** ensure visual editing works in Presentation tool
+
+## Core Visual Editing Principles
+
+### ✅ DO: Use Raw Data for Editable Fields
+
+- **ALWAYS** use raw data (direct props) for text fields that should be visually editable
+- **NEVER** use `stegaClean()` on text fields like `title`, `heading`, `description`, `body`, etc.
+- **ONLY** use `stegaClean()` for non-editable fields like `colorVariant`, `padding`, layout options
+
+```tsx
+// ✅ CORRECT - Raw data for editable fields
+export default function MyComponent({ title, description, colorVariant }) {
+  const color = stegaClean(colorVariant); // Only clean non-editable fields
+
+  return (
+    <div>
+      <h2>{title}</h2> {/* Raw data - visually editable */}
+      <p>{description}</p> {/* Raw data - visually editable */}
+    </div>
+  );
+}
+
+// ❌ WRONG - Don't clean editable text fields
+export default function MyComponent({ title, description }) {
+  const cleanTitle = stegaClean(title); // ❌ This breaks visual editing
+  const cleanDescription = stegaClean(description); // ❌ This breaks visual editing
+
+  return (
+    <div>
+      <h2>{cleanTitle}</h2> {/* ❌ Not visually editable */}
+      <p>{cleanDescription}</p> {/* ❌ Not visually editable */}
+    </div>
+  );
+}
+```
+
+### ✅ DO: Use Raw Data for URLs and Links
+
+- **ALWAYS** use raw data for `href`, `url`, and link fields
+- **NEVER** use `stegaClean()` on URL fields that should be editable
+
+```tsx
+// ✅ CORRECT - Raw URL data
+<a href={demoUrl}>{linkText}</a>;
+
+// ❌ WRONG - Cleaned URL data
+const cleanUrl = stegaClean(demoUrl);
+<a href={cleanUrl}>{linkText}</a>; // ❌ Breaks visual editing
+```
+
+### ✅ DO: Use Raw Data for Array Items
+
+- **ALWAYS** pass raw array data to child components
+- **NEVER** use `stegaClean()` on arrays that contain editable content
+
+```tsx
+// ✅ CORRECT - Raw array data
+{
+  items && items.map((item) => <ChildComponent {...item} key={item._key} />);
+}
+
+// ❌ WRONG - Cleaned array data
+const cleanItems = stegaClean(items);
+{
+  cleanItems &&
+    cleanItems.map((item) => <ChildComponent {...item} key={item._key} />);
+} // ❌ Breaks visual editing
+```
+
+### ✅ DO: Use Raw Data for Image Alt Text
+
+- **ALWAYS** use raw data for image alt text and metadata
+- **NEVER** use `stegaClean()` on image alt fields
+
+```tsx
+// ✅ CORRECT - Raw image data
+<Image
+  src={urlFor(image).url()}
+  alt={image.alt || title || ''} // Raw data
+  // ... other props
+/>;
+
+// ❌ WRONG - Cleaned image alt
+const cleanAlt = stegaClean(image.alt);
+<Image alt={cleanAlt} />; // ❌ Breaks visual editing
+```
+
+## Schema Definition Rules
+
+### ✅ DO: Define Editable Fields Properly
+
+- **ALWAYS** use `defineField()` for all editable fields
+- **ALWAYS** include validation rules for required fields
+- **ALWAYS** use appropriate field types (string, text, url, image, etc.)
+
+```ts
+// ✅ CORRECT - Proper field definition
+defineField({
+  name: 'title',
+  type: 'string',
+  title: 'Title',
+  validation: (rule) => rule.required().error('Title is required'),
+}),
+defineField({
+  name: 'description',
+  type: 'text',
+  title: 'Description',
+  validation: (rule) => rule.max(200).error('Description too long'),
+}),
+defineField({
+  name: 'url',
+  type: 'url',
+  title: 'URL',
+  validation: (rule) => rule.required().error('URL is required'),
+}),
+```
+
+### ✅ DO: Use Proper Preview Configuration
+
+- **ALWAYS** include a `preview` configuration for schema types
+- **ALWAYS** use meaningful `select` and `prepare` functions
+
+```ts
+preview: {
+  select: {
+    title: 'title',
+    subtitle: 'description',
+    media: 'image',
+  },
+  prepare({ title, subtitle, media }) {
+    return {
+      title: title || 'Untitled',
+      subtitle: subtitle || 'No description',
+      media,
+    };
+  },
+},
+```
+
+## Component Structure Rules
+
+### ✅ DO: Follow Standard Component Pattern
+
+- **ALWAYS** extract types from `PAGE_QUERYResult`
+- **ALWAYS** use proper TypeScript interfaces
+- **ALWAYS** handle optional fields gracefully
+
+```tsx
+import { stegaClean } from 'next-sanity';
+import { PAGE_QUERYResult } from '@/sanity.types';
+
+type Block = NonNullable<NonNullable<PAGE_QUERYResult>['blocks']>[number];
+type MyComponent = Extract<Block, { _type: 'my-component' }>;
+
+export default function MyComponent({
+  title,
+  description,
+  colorVariant,
+  items,
+}: MyComponent) {
+  const color = stegaClean(colorVariant); // Only clean non-editable fields
+
+  return (
+    <SectionContainer color={color}>
+      {title && <h2>{title}</h2>}
+      {description && <p>{description}</p>}
+      {items &&
+        items.map((item) => <ChildComponent {...item} key={item._key} />)}
+    </SectionContainer>
+  );
+}
+```
+
+### ✅ DO: Handle Nested Components Properly
+
+- **ALWAYS** pass raw data to child components
+- **ALWAYS** use proper key props for mapped items
+- **ALWAYS** handle missing data gracefully
+
+```tsx
+// ✅ CORRECT - Nested component handling
+export default function ParentComponent({ children }) {
+  return (
+    <div>
+      {children &&
+        children.map((child) => {
+          const Component = componentMap[child._type];
+          if (!Component) return null;
+          return <Component {...child} key={child._key} />;
+        })}
+    </div>
+  );
+}
+```
+
+## Query Rules
+
+### ✅ DO: Use Proper GROQ Query Structure
+
+- **ALWAYS** use `// @sanity-typegen-ignore` for query fragments
+- **ALWAYS** include all required fields in projections
+- **ALWAYS** use proper conditional syntax for block queries
+
+```ts
+// ✅ CORRECT - Query fragment
+import { groq } from 'next-sanity';
+
+// @sanity-typegen-ignore
+export const myComponentQuery = groq`
+  _type,
+  _key,
+  title,
+  description,
+  url,
+  image{
+    ...,
+    asset->{
+      _id,
+      url,
+      metadata {
+        lqip,
+        dimensions {
+          width,
+          height
+        }
+      }
+    },
+    alt
+  }
+`;
+```
+
+### ✅ DO: Include Query in Main Page Query
+
+- **ALWAYS** add new block queries to the main page query
+- **ALWAYS** use proper conditional syntax
+
+```ts
+// ✅ CORRECT - Main page query integration
+export const PAGE_QUERY = groq`
+  *[_type == "page" && slug.current == $slug][0]{
+    blocks[]{
+      ${hero1Query},
+      ${myComponentQuery}, // Add new query here
+      // ... other queries
+    },
+  }
+`;
+```
+
+## Registration Rules
+
+### ✅ DO: Register All Components Properly
+
+- **ALWAYS** add new schema types to `sanity/schema.ts`
+- **ALWAYS** add new components to `components/blocks/index.tsx`
+- **ALWAYS** add new block types to page schema
+
+```ts
+// ✅ CORRECT - Schema registration
+import myComponent from './blocks/my-component';
+
+export const schema = {
+  types: [
+    // ... existing types
+    myComponent,
+  ],
+};
+```
+
+```tsx
+// ✅ CORRECT - Component registration
+import MyComponent from './my-component';
+
+const componentMap = {
+  // ... existing components
+  'my-component': MyComponent,
+};
+```
+
+## Common Mistakes to Avoid
+
+### ❌ DON'T: Use stegaClean on Editable Fields
+
+- Never use `stegaClean()` on `title`, `heading`, `description`, `body`, `url`, etc.
+- Only use `stegaClean()` for layout/configuration fields like `colorVariant`, `padding`
+
+### ❌ DON'T: Use data-sanity-edit Attributes
+
+- Never add custom `data-sanity-edit` attributes
+- Never use `useIsLivePreview` hook
+- Visual editing works automatically through the data structure
+
+### ❌ DON'T: Clean Array Data
+
+- Never use `stegaClean()` on arrays that contain editable content
+- Pass raw array data directly to child components
+
+### ❌ DON'T: Clean Image Metadata
+
+- Never use `stegaClean()` on image alt text or metadata
+- Use raw image data for all image-related fields
+
+## Testing Visual Editing
+
+### ✅ DO: Test All Editable Fields
+
+1. Go to Sanity Studio → Presentation tab
+2. Select a page with your component
+3. Click on all text fields to ensure they're editable
+4. Test adding/removing array items
+5. Test image uploads and alt text editing
+6. Test URL field editing
+
+### ✅ DO: Verify Data Flow
+
+- Check that changes in the studio immediately reflect in the presentation
+- Verify that all fields show the correct editing interface
+- Ensure that nested components are also editable
+
+## 🚀 Component Creation Checklist
+
+When creating a new component, follow this complete checklist:
+
+### 1. Schema Definition
+
+- [ ] Create schema file in appropriate folder (`sanity/schemas/blocks/[category]/[component-name].ts`)
+- [ ] Define all fields with proper validation
+- [ ] Add icon from `lucide-react`
+- [ ] Create preview configuration
+- [ ] Add to `sanity/schema.ts`
+
+### 2. GROQ Queries
+
+- [ ] Create query fragment in `sanity/queries/[category]/[component-name].ts`
+- [ ] Use `// @sanity-typegen-ignore` comment
+- [ ] Include all required fields
+- [ ] Add to main page query in `sanity/queries/page.ts`
+
+### 3. React Component
+
+- [ ] Create component in `components/blocks/[category]/[component-name].tsx`
+- [ ] Use raw data for editable fields
+- [ ] Use `stegaClean()` only for config fields
+- [ ] Follow exact visual design
+- [ ] Add to `components/blocks/index.tsx`
+
+### 4. Page Integration
+
+- [ ] Add component to page schema's `blocks` field
+- [ ] Add to appropriate `insertMenu` group
+- [ ] Create preview image and save to `/public/sanity/preview/[component-name].jpg`
+- [ ] Reference preview image in schema
+
+### 5. Testing
+
+- [ ] Verify component appears in Sanity Studio
+- [ ] Test visual editing in Presentation tool
+- [ ] Ensure all fields are editable
+- [ ] Check responsive design
+- [ ] Verify preview image displays correctly
+
+## 🎯 Golden Rules
+
+1. **Visual Accuracy**: Match the design exactly as shown
+2. **No Hardcoding**: Make everything editable through Sanity
+3. **Raw Data**: Use raw data for editable fields, `stegaClean()` only for config
+4. **Complete Integration**: Always integrate fully into the system
+5. **Preview Images**: Always create representative preview images
+
+This ensures that all new components will have proper visual editing capabilities that work seamlessly with Sanity's Presentation tool.

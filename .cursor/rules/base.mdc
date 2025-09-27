@@ -1,0 +1,14 @@
+---
+description: 'Global project rules'
+alwaysApply: true
+globs: ./**/*
+---
+
+# General Rule: Always Use Context 7
+
+- For ANY request (coding, config, styling, API usage, CLI, whatever the tech stack), always use Context 7 to fetch and reference the latest official documentation, changelogs, and examples for the relevant tool, framework, package, or API.
+- Prioritize guidance and code patterns surfaced by Context 7 over anything based on model-only memory or outdated knowledge.
+- Never rely on “hallucinated” knowledge if current docs can be checked via Context 7.
+- For new components, we will use https://www.shadcnblocks.com/. I'll give you the code, the picture, and the docs, and you should consult the shadcnblocks doc using context 7.
+
+> “For this styling, use Context 7 to fetch the most recent recommendations from the relevant CSS/styling or framework docs.”

@@ -1,0 +1,887 @@
+---
+description: Complete workflow for integrating shadcnblocks.com components into the Sanity-powered application
+globs: **/*.{ts,tsx,js,jsx}
+alwaysApply: false
+---
+
+## Integrating shadcnblocks.com Components
+
+When the user provides a new component from shadcnblocks.com (React code + screenshot), follow this complete workflow to integrate it into the application.
+
+### Prerequisites
+
+Before starting, use Context7 MCP to:
+
+- Fetch latest Sanity documentation for schema patterns
+- Fetch latest Next.js documentation for component patterns
+- Review shadcnblocks documentation if needed
+
+### Workflow Overview
+
+The integration process requires **5 main steps** in this order:
+
+1. **Create Schema Files** (Sanity Studio)
+2. **Register Schema Types** (schema.ts)
+3. **Create Query Files** (GROQ queries)
+4. **Create React Components** (Front-end)
+5. **Wire Everything Together** (index files)
+
+---
+
+## Step 1: Create Schema Files
+
+### 1.1 Analyze Component Structure
+
+From the provided React code and screenshot, determine:
+
+- Is this a **parent block** (contains child components) or **standalone block**?
+- What fields are present? (text, images, links, arrays, etc.)
+- What visual customization options exist? (colors, padding, layout variants)
+
+### 1.2 Create Schema Type File(s)
+
+#### Location Pattern:
+
+- Parent blocks: `/sanity/schemas/blocks/{category}/{component-name}.ts`
+- Child components: `/sanity/schemas/blocks/{category}/{child-name}.ts`
+- Standalone blocks: `/sanity/schemas/blocks/{component-name}.ts`
+
+**Categories include:** hero, grid, split, carousel, timeline, cta, logo-cloud, forms
+
+#### Schema File Template (Standalone Block):
+
+```typescript
+import { defineField, defineType } from 'sanity';
+import { IconName } from 'lucide-react'; // Choose appropriate icon
+
+export default defineType({
+  name: 'component-name', // kebab-case, matches filename
+  type: 'object',
+  title: 'Component Name', // Human-readable
+  description: 'Brief description of what this component does',
+  icon: IconName,
+  fields: [
+    // Common fields (use as needed):
+    defineField({
+      name: 'padding',
+      type: 'section-padding',
+    }),
+    defineField({
+      name: 'colorVariant',
+      type: 'color-variant',
+      description: 'Select a background color variant',
+    }),
+    defineField({
+      name: 'tagLine',
+      type: 'string',
+    }),
+    defineField({
+      name: 'title',
+      type: 'string',
+    }),
+    defineField({
+      name: 'body',
+      type: 'block-content',
+    }),
+    defineField({
+      name: 'image',
+      type: 'image',
+      options: { hotspot: true },
+      fields: [
+        {
+          name: 'alt',
+          type: 'string',
+          title: 'Alternative Text',
+        },
+      ],
+    }),
+    defineField({
+      name: 'link',
+      type: 'link',
+      description:
+        'Link to a page or external URL. Leave empty to hide the link.',
+    }),
+    defineField({
+      name: 'links',
+      type: 'array',
+      of: [{ type: 'link' }],
+      validation: (rule) => rule.max(2), // Adjust as needed
+    }),
+  ],
+  preview: {
+    select: {
+      title: 'title', // Adjust based on available fields
+    },
+    prepare({ title }) {
+      return {
+        title: 'Component Name',
+        subtitle: title || 'No Title',
+      };
+    },
+  },
+});
+```
+
+#### Schema File Template (Parent Block with Children):
+
+```typescript
+import { defineType, defineField } from 'sanity';
+import { IconName } from 'lucide-react';
+
+export default defineType({
+  name: 'parent-row',
+  type: 'object',
+  title: 'Parent Row',
+  description: 'Parent block with multiple child component variants',
+  icon: IconName,
+  fields: [
+    defineField({
+      name: 'padding',
+      type: 'section-padding',
+    }),
+    defineField({
+      name: 'colorVariant',
+      type: 'color-variant',
+      description: 'Select a background color variant',
+    }),
+    // Layout-specific fields (e.g., gap, columns)
+    defineField({
+      name: 'columns',
+      type: 'array',
+      of: [
+        { type: 'child-component-1' },
+        { type: 'child-component-2' },
+        { type: 'child-component-3' },
+      ],
+      validation: (rule) => rule.max(4), // Adjust based on design
+      options: {
+        insertMenu: {
+          views: [
+            {
+              name: 'grid',
+              previewImageUrl: (block) => `/sanity/preview/${block}.jpg`,
+            },
+            { name: 'list' },
+          ],
+        },
+      },
+    }),
+  ],
+  preview: {
+    select: {
+      title0: 'columns.0.title',
+      title1: 'columns.1.title',
+    },
+    prepare({ title0, title1 }) {
+      return {
+        title: 'Parent Row',
+        subtitle: title0 || title1 || 'No Title',
+      };
+    },
+  },
+});
+```
+
+### 1.3 Key Schema Principles
+
+**CRITICAL RULES:**
+
+- ALWAYS use `defineType`, `defineField`, and `defineArrayMember`
+- NEVER hardcode content values
+- ALWAYS include an `icon` from `lucide-react`
+- ALWAYS provide meaningful `preview` configuration
+- Use `section-padding` and `color-variant` for consistent styling
+- Use `block-content` for rich text
+- Use `link` type for buttons/links (includes internal/external handling)
+- Use `options.hotspot: true` for images
+- Use `validation` rules appropriately
+- Use `initialValue` for boolean fields
+
+**Field Type Guidelines:**
+
+- Text content → `string` or `text` (multi-line)
+- Rich text → `block-content`
+- Images → `image` with alt field
+- Links/Buttons → `link` (handles internal/external)
+- Multiple links → `array` of `link`
+- Boolean toggles → `boolean` with `initialValue`
+- Enums → `string` with `options.list`
+- Child components → `array` of object types
+
+---
+
+## Step 2: Register Schema Types
+
+### 2.1 Import Schema in `/sanity/schema.ts`
+
+```typescript
+// Import your new schema files
+import componentName from './schemas/blocks/{category}/{component-name}';
+import childComponent from './schemas/blocks/{category}/{child-name}';
+
+export const schema: { types: SchemaTypeDefinition[] } = {
+  types: [
+    // ... existing types
+    componentName,
+    childComponent, // If applicable
+  ],
+};
+```
+
+**Order:** Documents first, shared objects, then blocks
+
+### 2.2 Add to Page Schema (if applicable)
+
+Edit `/sanity/schemas/documents/page.ts`:
+
+```typescript
+defineField({
+  name: "blocks",
+  type: "array",
+  group: "content",
+  of: [
+    // ... existing blocks
+    { type: "component-name" }, // Add your new block
+  ],
+  options: {
+    insertMenu: {
+      groups: [
+        // ... existing groups
+        {
+          name: "category-name", // e.g., "testimonials"
+          title: "Category Name",
+          of: ["component-name"],
+        },
+      ],
+      views: [
+        {
+          name: "grid",
+          previewImageUrl: (block) => `/sanity/preview/${block}.jpg`,
+        },
+        { name: "list" },
+      ],
+    },
+  },
+}),
+```
+
+**Note:** If user requests adding to other document types (e.g., post), add there as well.
+
+---
+
+## Step 3: Create Query Files
+
+### 3.1 Create Query Fragment File(s)
+
+#### Location Pattern:
+
+- Parent blocks: `/sanity/queries/{category}/{component-name}.ts`
+- Child components: `/sanity/queries/{category}/{child-name}.ts`
+- Standalone blocks: `/sanity/queries/{component-name}.ts`
+
+#### Query Template (Standalone Block):
+
+```typescript
+import { groq } from 'next-sanity';
+import { linkQuery } from '../shared/link';
+import { imageQuery } from '../shared/image';
+import { bodyQuery } from '../shared/body';
+
+// @sanity-typegen-ignore
+export const componentNameQuery = groq`
+  _type == "component-name" => {
+    _type,
+    _key,
+    padding,
+    colorVariant,
+    tagLine,
+    title,
+    body[]{
+      ${bodyQuery}
+    },
+    image{
+      ${imageQuery}
+    },
+    link{
+      ${linkQuery}
+    },
+    links[]{
+      ${linkQuery}
+    },
+  }
+`;
+```
+
+#### Query Template (Parent Block):
+
+```typescript
+import { groq } from 'next-sanity';
+import { childComponent1Query } from './child-component-1';
+import { childComponent2Query } from './child-component-2';
+
+// @sanity-typegen-ignore
+export const parentRowQuery = groq`
+  _type == "parent-row" => {
+    _type,
+    _key,
+    padding,
+    colorVariant,
+    columns[]{
+      ${childComponent1Query},
+      ${childComponent2Query},
+    },
+  }
+`;
+```
+
+#### Query Template (Child Component):
+
+```typescript
+import { groq } from 'next-sanity';
+import { linkQuery } from '../shared/link';
+import { imageQuery } from '../shared/image';
+
+// @sanity-typegen-ignore
+export const childComponentQuery = groq`
+  _type == "child-component" => {
+    _type,
+    _key,
+    title,
+    description,
+    image{
+      ${imageQuery}
+    },
+  }
+`;
+```
+
+### 3.2 Query Principles
+
+**CRITICAL RULES:**
+
+- ALWAYS use `groq` tag from "next-sanity"
+- ALWAYS include `_type` and `_key`
+- ALWAYS use shared query fragments (`linkQuery`, `imageQuery`, `bodyQuery`)
+- ALWAYS add `// @sanity-typegen-ignore` comment
+- Use conditional query pattern: `_type == "name" => { ... }`
+- Query every field defined in schema (no hardcoding)
+
+**Shared Query Fragments Available:**
+
+- `linkQuery` - handles internal/external links
+- `imageQuery` - fetches image with metadata, lqip, dimensions
+- `bodyQuery` - fetches portable text with nested links/images
+
+### 3.3 Update Page Query
+
+Edit `/sanity/queries/page.ts`:
+
+```typescript
+import { componentNameQuery } from './{category}/{component-name}';
+
+export const PAGE_QUERY = groq`
+  *[_type == "page" && slug.current == $slug][0]{
+    blocks[]{
+      // ... existing queries
+      ${componentNameQuery},
+    },
+    // ... rest of query
+  }
+`;
+```
+
+---
+
+## Step 4: Create React Components
+
+### 4.1 Create Component File(s)
+
+#### Location Pattern:
+
+- Parent blocks: `/components/blocks/{category}/{component-name}.tsx`
+- Child components: `/components/blocks/{category}/{child-name}.tsx`
+- Standalone blocks: `/components/blocks/{component-name}.tsx`
+
+#### Component Template (Standalone Block):
+
+```tsx
+import { PAGE_QUERYResult } from '@/sanity.types';
+import { stegaClean } from 'next-sanity';
+import { Button } from '@/components/ui/button';
+import Link from 'next/link';
+import Image from 'next/image';
+import { urlFor } from '@/sanity/lib/image';
+import PortableTextRenderer from '@/components/portable-text-renderer';
+import TagLine from '@/components/ui/tag-line';
+import SectionContainer from '@/components/ui/section-container';
+
+type Block = NonNullable<NonNullable<PAGE_QUERYResult>['blocks']>[number];
+type ComponentNameBlock = Extract<Block, { _type: 'component-name' }>;
+
+export default function ComponentName({
+  padding,
+  colorVariant,
+  tagLine,
+  title,
+  body,
+  image,
+  link,
+  links,
+}: ComponentNameBlock) {
+  const color = stegaClean(colorVariant);
+
+  return (
+    <SectionContainer color={color} padding={padding}>
+      {/* Paste and adapt the React code from shadcnblocks.com here */}
+      {/* Replace all hardcoded values with props */}
+      <div className="...">
+        {tagLine && <TagLine title={tagLine} element="h2" />}
+        {title && <h2 className="...">{title}</h2>}
+        {body && <PortableTextRenderer value={body} />}
+        {image && image.asset?._id && (
+          <Image
+            src={urlFor(image).url()}
+            alt={image.alt || ''}
+            width={image.asset?.metadata?.dimensions?.width || 800}
+            height={image.asset?.metadata?.dimensions?.height || 800}
+            placeholder={image?.asset?.metadata?.lqip ? 'blur' : undefined}
+            blurDataURL={image?.asset?.metadata?.lqip || ''}
+            quality={100}
+          />
+        )}
+        {link?.href && (
+          <Button variant={stegaClean(link?.buttonVariant)} asChild>
+            <Link href={link.href} target={link.target ? '_blank' : undefined}>
+              {link.title}
+            </Link>
+          </Button>
+        )}
+      </div>
+    </SectionContainer>
+  );
+}
+```
+
+#### Component Template (Parent Block):
+
+```tsx
+import { cn } from '@/lib/utils';
+import SectionContainer from '@/components/ui/section-container';
+import { stegaClean } from 'next-sanity';
+import { PAGE_QUERYResult } from '@/sanity.types';
+import ChildComponent1 from './child-component-1';
+import ChildComponent2 from './child-component-2';
+
+type Block = NonNullable<NonNullable<PAGE_QUERYResult>['blocks']>[number];
+type ParentRow = Extract<Block, { _type: 'parent-row' }>;
+type ColumnType = NonNullable<NonNullable<ParentRow['columns']>[number]>;
+
+const componentMap: {
+  [K in ColumnType['_type']]: React.ComponentType<
+    Extract<ColumnType, { _type: K }>
+  >;
+} = {
+  'child-component-1': ChildComponent1,
+  'child-component-2': ChildComponent2,
+};
+
+export default function ParentRow({
+  padding,
+  colorVariant,
+  columns,
+}: ParentRow) {
+  const color = stegaClean(colorVariant);
+
+  return (
+    <SectionContainer color={color} padding={padding}>
+      {columns && columns?.length > 0 && (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {columns.map((column) => {
+            const Component = componentMap[column._type];
+            if (!Component) {
+              console.warn(
+                `No component implemented for column type: ${column._type}`
+              );
+              return <div data-type={column._type} key={column._key} />;
+            }
+            return (
+              <Component {...(column as any)} color={color} key={column._key} />
+            );
+          })}
+        </div>
+      )}
+    </SectionContainer>
+  );
+}
+```
+
+#### Component Template (Child Component):
+
+```tsx
+import { PAGE_QUERYResult } from '@/sanity.types';
+import Image from 'next/image';
+import { urlFor } from '@/sanity/lib/image';
+
+type Block = NonNullable<NonNullable<PAGE_QUERYResult>['blocks']>[number];
+type ParentRow = Extract<Block, { _type: 'parent-row' }>;
+type ChildComponent = Extract<
+  NonNullable<ParentRow['columns']>[number],
+  { _type: 'child-component' }
+>;
+
+interface ChildComponentProps extends ChildComponent {
+  color?: string; // Passed from parent
+}
+
+export default function ChildComponent({
+  title,
+  description,
+  image,
+  color,
+}: ChildComponentProps) {
+  return (
+    <div className="...">
+      {/* Adapt shadcnblocks code here */}
+      {title && <h3>{title}</h3>}
+      {description && <p>{description}</p>}
+      {image && image.asset?._id && (
+        <Image
+          src={urlFor(image).url()}
+          alt={image.alt || ''}
+          width={image.asset?.metadata?.dimensions?.width || 600}
+          height={image.asset?.metadata?.dimensions?.height || 400}
+        />
+      )}
+    </div>
+  );
+}
+```
+
+### 4.2 Component Principles
+
+**CRITICAL RULES:**
+
+- ALWAYS extract proper TypeScript types from `PAGE_QUERYResult`
+- ALWAYS use `stegaClean()` for enum values (e.g., colorVariant, buttonVariant)
+- NEVER hardcode content - use props from Sanity
+- Use TailwindCSS classes from the shadcnblocks code
+- Wrap top-level blocks in `SectionContainer` (handles padding/color)
+- Use helper components:
+  - `PortableTextRenderer` for rich text
+  - `TagLine` for tag lines
+  - `urlFor()` for image URLs
+  - `Button` from shadcn/ui
+- Use proper Next.js `Image` component with metadata
+- Use functional components with proper props destructuring
+- Include proper null checks and conditional rendering
+
+**Image Pattern:**
+
+```tsx
+{
+  image && image.asset?._id && (
+    <Image
+      src={urlFor(image).url()}
+      alt={image.alt || ''}
+      width={image.asset?.metadata?.dimensions?.width || 800}
+      height={image.asset?.metadata?.dimensions?.height || 800}
+      placeholder={image?.asset?.metadata?.lqip ? 'blur' : undefined}
+      blurDataURL={image?.asset?.metadata?.lqip || ''}
+      quality={100}
+      className="..."
+    />
+  );
+}
+```
+
+**Link/Button Pattern:**
+
+```tsx
+{
+  link?.href && (
+    <Button variant={stegaClean(link?.buttonVariant)} size="lg" asChild>
+      <Link href={link.href} target={link.target ? '_blank' : undefined}>
+        {link.title}
+      </Link>
+    </Button>
+  );
+}
+```
+
+**Links Array Pattern:**
+
+```tsx
+{
+  links && links.length > 0 && (
+    <div className="flex gap-4">
+      {links.map((link) => (
+        <Button
+          key={link.title}
+          variant={stegaClean(link?.buttonVariant)}
+          asChild
+        >
+          <Link
+            href={link.href || '#'}
+            target={link.target ? '_blank' : undefined}
+          >
+            {link.title}
+          </Link>
+        </Button>
+      ))}
+    </div>
+  );
+}
+```
+
+---
+
+## Step 5: Wire Everything Together
+
+### 5.1 Update Block Index File
+
+Edit `/components/blocks/index.tsx`:
+
+```typescript
+import { PAGE_QUERYResult } from '@/sanity.types';
+import ComponentName from '@/components/blocks/{category}/{component-name}';
+// ... other imports
+
+type Block = NonNullable<NonNullable<PAGE_QUERYResult>['blocks']>[number];
+
+const componentMap: {
+  [K in Block['_type']]: React.ComponentType<Extract<Block, { _type: K }>>;
+} = {
+  // ... existing mappings
+  'component-name': ComponentName,
+};
+
+export default function Blocks({ blocks }: { blocks: Block[] }) {
+  return (
+    <>
+      {blocks?.map((block) => {
+        const Component = componentMap[block._type];
+        if (!Component) {
+          console.warn(
+            `No component implemented for block type: ${block._type}`
+          );
+          return <div data-type={block._type} key={block._key} />;
+        }
+        return <Component {...(block as any)} key={block._key} />;
+      })}
+    </>
+  );
+}
+```
+
+### 5.2 Create Preview Image
+
+**Location:** `/public/sanity/preview/{component-name}.jpg`
+
+**Requirements:**
+
+- Take a screenshot of the component from shadcnblocks.com
+- Save as `.jpg` format
+- Name must match schema `name` field exactly
+- This image appears in the Sanity Studio insert menu
+
+---
+
+## Step 6: Generate Types and Test
+
+### 6.1 Regenerate Sanity Types
+
+Run the following command to generate TypeScript types:
+
+```bash
+pnpm typegen
+```
+
+This runs:
+
+1. `rm -rf schema.json` - removes old schema
+2. `sanity schema extract` - extracts new schema
+3. `sanity typegen generate` - generates TypeScript types
+
+### 6.2 Verify Integration
+
+**In Sanity Studio:**
+
+1. Navigate to `http://localhost:3000/studio`
+2. Open a page document
+3. Add your new block component
+4. Fill in all fields
+5. Publish
+
+**In Front-end:**
+
+1. Navigate to the page where you added the component
+2. Verify component renders correctly
+3. Check that all fields are displayed
+4. Verify Tailwind styles are applied
+5. Test responsive behavior
+
+---
+
+## Special Cases
+
+### Case 1: Creating New Content Types (e.g., Testimonial, Team Member)
+
+If the user asks to create a new document type (not a block):
+
+1. **Create document schema:**
+
+   - Location: `/sanity/schemas/documents/{document-name}.ts`
+   - Use `type: "document"` (not "object")
+   - Include SEO fields if needed
+   - Add `orderRankField` if ordering is needed
+
+2. **Create queries:**
+
+   - Single document: `DOCUMENT_QUERY`
+   - List of documents: `DOCUMENTS_QUERY`
+   - Slugs for static params: `DOCUMENTS_SLUGS_QUERY`
+
+3. **Create pages if needed:**
+
+   - `/app/(main)/{document-type}/[slug]/page.tsx`
+   - Implement `generateStaticParams()`
+   - Implement `generateMetadata()`
+
+4. **Reference in blocks:**
+   - Use `type: "reference"` in block schemas
+   - Add `to: [{ type: "document-name" }]`
+   - Query with `document->{...fields}`
+
+### Case 2: Adding Component to Multiple Parent Blocks
+
+If a child component should be available in multiple parents:
+
+1. Register the child component in each parent's schema `of` array
+2. Import the child query in each parent's query file
+3. Add to each parent's `componentMap` in React
+
+### Case 3: Complex Nested Structures
+
+For deeply nested components (e.g., accordion > items > content):
+
+1. Create schema for each level (parent, child, grandchild)
+2. Create queries for each level
+3. Create components for each level
+4. Use nested `componentMap` objects in parent components
+
+---
+
+## Checklist Template
+
+When integrating a new shadcnblocks.com component, complete this checklist:
+
+### Schema Layer
+
+- [ ] Created schema file(s) in `/sanity/schemas/blocks/{category}/`
+- [ ] Included all fields (no hardcoded content)
+- [ ] Added icon from lucide-react
+- [ ] Configured preview
+- [ ] Used proper field types (section-padding, color-variant, link, etc.)
+- [ ] Registered in `/sanity/schema.ts`
+- [ ] Added to page schema blocks array (or other document type)
+- [ ] Added to insertMenu groups
+
+### Query Layer
+
+- [ ] Created query file(s) in `/sanity/queries/{category}/`
+- [ ] Used groq tag and @sanity-typegen-ignore
+- [ ] Included \_type and \_key
+- [ ] Used shared query fragments (linkQuery, imageQuery, bodyQuery)
+- [ ] Queried all schema fields
+- [ ] Updated PAGE_QUERY in `/sanity/queries/page.ts`
+
+### Component Layer
+
+- [ ] Created component file(s) in `/components/blocks/{category}/`
+- [ ] Extracted proper TypeScript types from PAGE_QUERYResult
+- [ ] Wrapped in SectionContainer (for top-level blocks)
+- [ ] Used stegaClean for enum values
+- [ ] Replaced all hardcoded content with props
+- [ ] Used urlFor() for images
+- [ ] Used proper Image component with metadata
+- [ ] Used Button and Link components properly
+- [ ] Added null checks and conditional rendering
+- [ ] Adapted shadcnblocks code with Tailwind classes
+
+### Integration Layer
+
+- [ ] Updated `/components/blocks/index.tsx` componentMap
+- [ ] Imported component in index.tsx
+- [ ] Created preview image at `/public/sanity/preview/{name}.jpg`
+- [ ] Ran `pnpm typegen` to regenerate types
+- [ ] Tested in Sanity Studio
+- [ ] Tested on front-end
+- [ ] Verified responsive behavior
+- [ ] Verified all fields are editable and display correctly
+
+---
+
+## Common Patterns Reference
+
+### Available Shared Schema Types
+
+- `section-padding` - top/bottom padding toggles
+- `color-variant` - background color variants
+- `button-variant` - button style variants
+- `link` - internal/external link with button variant
+- `block-content` - portable text (rich text)
+- `image` - image with alt text and metadata
+
+### Available Shared Query Fragments
+
+- `linkQuery` - handles internal/external link resolution
+- `imageQuery` - fetches image with metadata, lqip, dimensions
+- `bodyQuery` - fetches portable text with nested links/images
+
+### Available UI Components
+
+- `SectionContainer` - wrapper with padding and color
+- `TagLine` - styled tag line component
+- `PortableTextRenderer` - renders portable text
+- `Button` - shadcn/ui button
+- `Card` - shadcn/ui card
+- `Badge` - shadcn/ui badge
+- `Accordion` - shadcn/ui accordion
+
+### Image Helper
+
+- `urlFor(image)` - generates optimized image URL from Sanity image object
+
+### Utility Functions
+
+- `stegaClean(value)` - cleans Sanity encoded values for comparison
+- `cn(...classes)` - conditional className utility (clsx + tailwind-merge)
+
+---
+
+## When to Ask vs Execute
+
+**Ask the user when:**
+
+- Component structure is ambiguous (parent/child unclear)
+- Multiple valid implementations exist
+- Need clarification on which document types to add component to
+- Unsure about field types or validation rules
+
+**Execute immediately when:**
+
+- Component structure is clear from the React code
+- All necessary information is provided
+- Following established patterns in the codebase
+- Standard shadcnblocks component integration
+
+---
+
+## Documentation References
+
+When implementing:
+
+1. Use Context7 to fetch latest Sanity schema documentation
+2. Use Context7 to fetch Next.js App Router documentation
+3. Refer to existing components in the codebase as examples
+4. Check shadcnblocks documentation for component-specific details

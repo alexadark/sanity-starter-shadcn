@@ -8,6 +8,48 @@ alwaysApply: false
 
 When the user provides a new component from shadcnblocks.com (React code + screenshot), follow this complete workflow to integrate it into the application.
 
+### What the User Provides
+
+The user will typically provide:
+
+1. **Screenshot** of the component from shadcnblocks.com
+2. **React code** for the component
+3. **Component documentation** showing props and their types
+4. **(Optional)** Specific instructions about which document types to add it to
+
+### Understanding Component Documentation
+
+When provided with props documentation, analyze:
+
+**Prop Structure:**
+
+```typescript
+interface ComponentProps {
+  title?: string; // Optional text → schema: string
+  description: string; // Required text → schema: string with validation
+  image?: ImageProps; // Optional image → schema: image
+  items: ItemProps[]; // Array → decide inline vs reusable
+  variant?: 'default' | 'compact'; // Enum → schema: string with options.list
+}
+```
+
+**Mapping Props to Schema:**
+
+- `string | undefined` → `{ type: 'string' }` (optional)
+- `string` (required) → `{ type: 'string', validation: (rule) => rule.required() }`
+- `string[]` → `{ type: 'array', of: [{ type: 'string' }] }`
+- `ImageProps` → `{ type: 'image', options: { hotspot: true } }`
+- `LinkProps` → `{ type: 'link' }`
+- `"variant1" | "variant2"` → `{ type: 'string', options: { list: [...] } }`
+- `ItemProps[]` → See "Handling Repeating Items" below
+
+**Common Patterns:**
+
+- Props with "?" are optional in schema (no required validation)
+- Array props need decision: inline object vs reference
+- Union types become `options.list` in schema
+- Complex nested objects may need separate schema types
+
 ### Prerequisites
 
 Before starting, use Context7 MCP to:
@@ -32,11 +74,41 @@ The integration process requires **5 main steps** in this order:
 
 ### 1.1 Analyze Component Structure
 
-From the provided React code and screenshot, determine:
+From the provided React code, screenshot, and documentation, determine:
 
 - Is this a **parent block** (contains child components) or **standalone block**?
 - What fields are present? (text, images, links, arrays, etc.)
 - What visual customization options exist? (colors, padding, layout variants)
+- **Analyze the props documentation** to understand:
+  - Required vs optional props
+  - Prop types and their structure
+  - Default values
+  - Any array props that represent repeating items
+
+#### Handling Repeating Items
+
+When components have **array props** for items (e.g., `items`, `features`, `testimonials`, `team`):
+
+**Option 1: Inline Items (Recommended for simple items)**
+
+- Create an inline object type within the parent schema
+- Use when items are specific to this component only
+- Example: Simple feature lists, step items, FAQ items
+
+**Option 2: Reusable Items (Recommended for complex items)**
+
+- Create a separate schema type (document or object)
+- Use when items could be referenced by multiple components
+- Use `type: "reference"` for document references
+- Use `type: "{item-type}"` for object references
+- Example: Testimonials, team members, products that might be used in multiple places
+
+**Decision Criteria:**
+
+- Simple items with 2-3 fields → Inline
+- Complex items with many fields → Separate schema type
+- Items used in multiple components → Separate schema type (reusable)
+- Items specific to one component → Inline
 
 ### 1.2 Create Schema Type File(s)
 
@@ -115,6 +187,76 @@ export default defineType({
     prepare({ title }) {
       return {
         title: 'Component Name',
+        subtitle: title || 'No Title',
+      };
+    },
+  },
+});
+```
+
+#### Schema File Template (Block with Inline Items):
+
+```typescript
+import { defineField, defineType } from 'sanity';
+import { IconName } from 'lucide-react';
+
+export default defineType({
+  name: 'component-with-items',
+  type: 'object',
+  title: 'Component with Items',
+  description: 'Component with repeating inline items',
+  icon: IconName,
+  fields: [
+    defineField({
+      name: 'padding',
+      type: 'section-padding',
+    }),
+    defineField({
+      name: 'colorVariant',
+      type: 'color-variant',
+    }),
+    defineField({
+      name: 'title',
+      type: 'string',
+    }),
+    defineField({
+      name: 'items',
+      type: 'array',
+      of: [
+        {
+          type: 'object',
+          fields: [
+            defineField({ name: 'title', type: 'string' }),
+            defineField({ name: 'description', type: 'text' }),
+            defineField({
+              name: 'icon',
+              type: 'string',
+              description: 'Icon name from lucide-react',
+            }),
+            defineField({
+              name: 'image',
+              type: 'image',
+              options: { hotspot: true },
+              fields: [{ name: 'alt', type: 'string' }],
+            }),
+          ],
+          preview: {
+            select: {
+              title: 'title',
+              subtitle: 'description',
+            },
+          },
+        },
+      ],
+    }),
+  ],
+  preview: {
+    select: {
+      title: 'title',
+    },
+    prepare({ title }) {
+      return {
+        title: 'Component with Items',
         subtitle: title || 'No Title',
       };
     },
@@ -677,12 +819,34 @@ export default function Blocks({ blocks }: { blocks: Block[] }) {
 
 **Location:** `/public/sanity/preview/{component-name}.jpg`
 
-**Requirements:**
+**CRITICAL:** The preview image is what users see in Sanity Studio's insert menu, making it easy to visually identify and select components.
 
-- Take a screenshot of the component from shadcnblocks.com
-- Save as `.jpg` format
-- Name must match schema `name` field exactly
-- This image appears in the Sanity Studio insert menu
+**Process:**
+
+1. Use the screenshot provided by the user (or take one from shadcnblocks.com)
+2. Crop/resize if needed to show the component clearly
+3. Save as `.jpg` format in `/public/sanity/preview/`
+4. Name MUST match the schema `name` field exactly (kebab-case)
+   - Schema name: `hero-3` → File: `hero-3.jpg`
+   - Schema name: `testimonial-grid` → File: `testimonial-grid.jpg`
+
+**For Parent-Child Components:**
+
+- Parent block: `{parent-name}.jpg` (e.g., `split-row.jpg`)
+- Child components: `{child-name}.jpg` (e.g., `split-content.jpg`, `split-image.jpg`)
+- Each child needs its own preview image for the insertMenu
+
+**Image Specifications:**
+
+- Format: JPEG (`.jpg`)
+- Recommended dimensions: 800x600px or similar aspect ratio
+- Show the component in a representative state (with sample content)
+- Keep file size reasonable (< 200KB)
+
+**This image appears in:**
+
+- Sanity Studio block insert menu (grid view)
+- Child component selection within parent blocks
 
 ---
 
@@ -769,6 +933,80 @@ For deeply nested components (e.g., accordion > items > content):
 3. Create components for each level
 4. Use nested `componentMap` objects in parent components
 
+### Case 4: Components with Repeating Items
+
+When a component has an array of items (e.g., features, testimonials, team members), decide between inline vs reusable:
+
+#### Inline Items Example (Simple Feature List):
+
+**Schema:**
+
+```typescript
+defineField({
+  name: 'features',
+  type: 'array',
+  of: [
+    {
+      type: 'object',
+      fields: [
+        { name: 'title', type: 'string' },
+        { name: 'description', type: 'text' },
+        { name: 'icon', type: 'string' },
+      ],
+    },
+  ],
+}),
+```
+
+#### Reusable Items Example (Testimonials):
+
+**1. Create document schema** (`/sanity/schemas/documents/testimonial.ts`):
+
+```typescript
+export default defineType({
+  name: 'testimonial',
+  type: 'document',
+  fields: [
+    defineField({ name: 'quote', type: 'text' }),
+    defineField({ name: 'author', type: 'string' }),
+    defineField({ name: 'role', type: 'string' }),
+    defineField({ name: 'avatar', type: 'image' }),
+    defineField({ name: 'company', type: 'string' }),
+  ],
+});
+```
+
+**2. Reference in block schema:**
+
+```typescript
+defineField({
+  name: 'testimonials',
+  type: 'array',
+  of: [{ type: 'reference', to: [{ type: 'testimonial' }] }],
+}),
+```
+
+**3. Query with dereferencing:**
+
+```typescript
+testimonials[]->{
+  _id,
+  quote,
+  author,
+  role,
+  avatar{
+    ${imageQuery}
+  },
+  company
+}
+```
+
+**4. Type extraction in component:**
+
+```typescript
+type Testimonial = NonNullable<NonNullable<Block['testimonials']>[number]>;
+```
+
 ---
 
 ## Checklist Template
@@ -777,11 +1015,15 @@ When integrating a new shadcnblocks.com component, complete this checklist:
 
 ### Schema Layer
 
+- [ ] Analyzed component props documentation to understand structure
+- [ ] Decided on inline vs reusable items for any array fields
 - [ ] Created schema file(s) in `/sanity/schemas/blocks/{category}/`
 - [ ] Included all fields (no hardcoded content)
 - [ ] Added icon from lucide-react
 - [ ] Configured preview
 - [ ] Used proper field types (section-padding, color-variant, link, etc.)
+- [ ] For inline items: added proper preview configuration
+- [ ] For reusable items: created separate document/object schema
 - [ ] Registered in `/sanity/schema.ts`
 - [ ] Added to page schema blocks array (or other document type)
 - [ ] Added to insertMenu groups
@@ -812,9 +1054,12 @@ When integrating a new shadcnblocks.com component, complete this checklist:
 
 - [ ] Updated `/components/blocks/index.tsx` componentMap
 - [ ] Imported component in index.tsx
-- [ ] Created preview image at `/public/sanity/preview/{name}.jpg`
+- [ ] Saved screenshot to `/public/sanity/preview/{name}.jpg`
+- [ ] Screenshot name matches schema name exactly (kebab-case)
+- [ ] For parent-child: created preview images for each child component
 - [ ] Ran `pnpm typegen` to regenerate types
 - [ ] Tested in Sanity Studio
+- [ ] Verified preview image appears in insert menu
 - [ ] Tested on front-end
 - [ ] Verified responsive behavior
 - [ ] Verified all fields are editable and display correctly

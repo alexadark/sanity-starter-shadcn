@@ -28,12 +28,19 @@ export default defineType({
       name: 'demoUrl',
       type: 'url',
       title: 'Demo URL',
-      description: "URL for the 'Book a demo' link",
+      description: 'URL for the demo link',
       validation: (Rule) =>
         Rule.uri({
           allowRelative: true,
           scheme: ['http', 'https', 'mailto', 'tel'],
         }),
+    }),
+    defineField({
+      name: 'demoText',
+      type: 'string',
+      title: 'Demo Link Text',
+      description: 'Text to display for the demo link',
+      initialValue: 'Book a demo',
     }),
     defineField({
       name: 'items',

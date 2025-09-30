@@ -10,6 +10,7 @@ export const carouselGalleryQuery = groq`
     colorVariant,
     heading,
     demoUrl,
+    demoText,
     items[]{
       ${carouselGalleryItemQuery},
     },

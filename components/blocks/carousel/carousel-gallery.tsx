@@ -29,6 +29,7 @@ export default function CarouselGallery({
   colorVariant,
   heading,
   demoUrl,
+  demoText,
   items,
 }: CarouselGalleryProps) {
   const color = stegaClean(colorVariant);
@@ -66,7 +67,7 @@ export default function CarouselGallery({
                 href={demoUrl}
                 className="group flex items-center gap-1 text-sm font-medium md:text-base lg:text-lg"
               >
-                Book a demo
+                {demoText || 'Book a demo'}
                 <ArrowUpRight className="size-4 transition-transform group-hover:translate-x-1" />
               </a>
             )}

@@ -2,13 +2,15 @@
   "name": "sanity-starter-shadcn",
   "version": "1.4.0",
   "private": true,
+  "type": "module",
   "scripts": {
     "dev": "next dev --turbopack",
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
     "typegen": "rm -rf schema.json && sanity schema extract && sanity typegen generate",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "sync-fonts": "node scripts/sync-fonts.js"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.2.2",

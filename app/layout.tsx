@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 import {
-  Outfit as FontSans,
-  Fira_Code as FontMono
+  Geist_Mono as FontSans,
+  JetBrains_Mono as FontMono
 } from "next/font/google";
 import './globals.css';
 import { cn } from '@/lib/utils';
@@ -32,7 +32,7 @@ export const metadata: Metadata = {
 
 const fontSans = FontSans({
   subsets: ['latin'],
-  weight: ["400","500","600","700"],
+  weight: ["100","200","300","400","500","600","700","800"],
   variable: '--font-sans',
 });
 
@@ -42,7 +42,7 @@ const fontSerif = {
 
 const fontMono = FontMono({
   subsets: ['latin'],
-  weight: ["400","500","600","700"],
+  weight: ["100","200","300","400","500","600","700","800"],
   variable: '--font-mono',
 });
 

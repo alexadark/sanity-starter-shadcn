@@ -21,6 +21,7 @@ interface GalleryLightboxProps
 export default function GalleryLightbox({
   padding,
   colorVariant,
+  tagLine,
   title,
   description,
   columns,
@@ -47,17 +48,18 @@ export default function GalleryLightbox({
   return (
     <>
       <SectionContainer color={color} padding={padding}>
-        <div className="mb-8 md:mb-12 lg:mb-16">
-          {title && (
-            <h2 className="mb-3 text-3xl font-semibold md:mb-4 md:text-4xl lg:mb-6">
-              {title}
-            </h2>
-          )}
-          {description && (
-            <p className="text-muted-foreground text-base md:text-lg">
-              {description}
-            </p>
-          )}
+        <div className="mb-8 md:mb-12 lg:mb-16 max-w-[48rem] text-center mx-auto">
+          <div
+            className={cn(color === 'primary' ? 'text-background' : undefined)}
+          >
+            {tagLine && (
+              <h1 className="leading-[0] mb-4">
+                <span className="text-base font-semibold">{tagLine}</span>
+              </h1>
+            )}
+            {title && <h2 className="text-3xl md:text-5xl mb-4">{title}</h2>}
+          </div>
+          {description && <p>{description}</p>}
         </div>
 
         {images && images.length > 0 && (

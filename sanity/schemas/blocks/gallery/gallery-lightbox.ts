@@ -20,16 +20,17 @@ export default defineType({
       description: 'Select a background color variant',
     }),
     defineField({
+      name: 'tagLine',
+      type: 'string',
+    }),
+    defineField({
       name: 'title',
       type: 'string',
-      validation: (rule) =>
-        rule.required().error('Title is required for the gallery'),
     }),
     defineField({
       name: 'description',
       type: 'text',
       rows: 3,
-      description: 'Optional description for the gallery',
     }),
     defineField({
       name: 'columns',
@@ -71,8 +72,6 @@ export default defineType({
               type: 'string',
               title: 'Alt Text',
               description: 'Important for SEO and accessibility',
-              validation: (rule) =>
-                rule.required().error('Alt text is required for accessibility'),
             }),
             defineField({
               name: 'caption',

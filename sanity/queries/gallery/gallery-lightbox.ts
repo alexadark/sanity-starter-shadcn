@@ -8,6 +8,7 @@ export const galleryLightboxQuery = groq`
     _key,
     padding,
     colorVariant,
+    tagLine,
     title,
     description,
     columns,

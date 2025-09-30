@@ -53,6 +53,7 @@ export default defineType({
         { type: 'faqs' },
         { type: 'form-newsletter' },
         { type: 'all-posts' },
+        { type: 'gallery-lightbox' },
       ],
       options: {
         insertMenu: {
@@ -111,6 +112,11 @@ export default defineType({
               name: 'all-posts',
               title: 'All Posts',
               of: ['all-posts'],
+            },
+            {
+              name: 'gallery',
+              title: 'Gallery',
+              of: ['gallery-lightbox'],
             },
           ],
           views: [

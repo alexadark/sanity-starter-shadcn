@@ -13,6 +13,7 @@ import LogoCloud1 from '@/components/blocks/logo-cloud/logo-cloud-1';
 import FAQs from '@/components/blocks/faqs';
 import FormNewsletter from '@/components/blocks/forms/newsletter';
 import AllPosts from '@/components/blocks/all-posts';
+import GalleryLightbox from '@/components/blocks/gallery/gallery-lightbox';
 
 type Block = NonNullable<NonNullable<PAGE_QUERYResult>['blocks']>[number];
 
@@ -33,6 +34,7 @@ const componentMap: {
   faqs: FAQs,
   'form-newsletter': FormNewsletter,
   'all-posts': AllPosts,
+  'gallery-lightbox': GalleryLightbox,
 };
 
 export default function Blocks({ blocks }: { blocks: Block[] }) {

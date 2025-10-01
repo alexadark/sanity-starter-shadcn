@@ -1,6 +1,7 @@
 import { PAGE_QUERYResult } from '@/sanity.types';
 import Hero1 from '@/components/blocks/hero/hero-1';
 import Hero2 from '@/components/blocks/hero/hero-2';
+import Hero3 from '@/components/blocks/hero/hero-3';
 import SectionHeader from '@/components/blocks/section-header';
 import SplitRow from '@/components/blocks/split/split-row';
 import GridRow from '@/components/blocks/grid/grid-row';
@@ -14,6 +15,7 @@ import FAQs from '@/components/blocks/faqs';
 import FormNewsletter from '@/components/blocks/forms/newsletter';
 import AllPosts from '@/components/blocks/all-posts';
 import GalleryLightbox from '@/components/blocks/gallery/gallery-lightbox';
+import FeaturesCards from '@/components/blocks/features/features-cards';
 
 type Block = NonNullable<NonNullable<PAGE_QUERYResult>['blocks']>[number];
 
@@ -22,6 +24,7 @@ const componentMap: {
 } = {
   'hero-1': Hero1,
   'hero-2': Hero2,
+  'hero-3': Hero3,
   'section-header': SectionHeader,
   'split-row': SplitRow,
   'grid-row': GridRow,
@@ -35,6 +38,7 @@ const componentMap: {
   'form-newsletter': FormNewsletter,
   'all-posts': AllPosts,
   'gallery-lightbox': GalleryLightbox,
+  'features-cards': FeaturesCards,
 };
 
 export default function Blocks({ blocks }: { blocks: Block[] }) {

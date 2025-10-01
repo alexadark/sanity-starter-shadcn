@@ -1,6 +1,7 @@
 import { groq } from 'next-sanity';
 import { hero1Query } from './hero/hero-1';
 import { hero2Query } from './hero/hero-2';
+import { hero3Query } from './hero/hero-3';
 import { sectionHeaderQuery } from './section-header';
 import { splitRowQuery } from './split/split-row';
 import { gridRowQuery } from './grid/grid-row';
@@ -14,12 +15,14 @@ import { faqsQuery } from './faqs';
 import { formNewsletterQuery } from './forms/newsletter';
 import { allPostsQuery } from './all-posts';
 import { galleryLightboxQuery } from './gallery/gallery-lightbox';
+import { featuresCardsQuery } from './features/features-cards';
 
 export const PAGE_QUERY = groq`
   *[_type == "page" && slug.current == $slug][0]{
     blocks[]{
       ${hero1Query},
       ${hero2Query},
+      ${hero3Query},
       ${sectionHeaderQuery},
       ${splitRowQuery},
       ${gridRowQuery},
@@ -33,6 +36,7 @@ export const PAGE_QUERY = groq`
       ${formNewsletterQuery},
       ${allPostsQuery},
       ${galleryLightboxQuery},
+      ${featuresCardsQuery},
     },
     meta_title,
     meta_description,

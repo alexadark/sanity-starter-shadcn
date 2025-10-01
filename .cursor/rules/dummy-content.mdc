@@ -1,0 +1,345 @@
+---
+description: Streamlined workflow for creating sample NDJSON data using placeholder images
+globs: **/*.ndjson
+alwaysApply: false
+---
+
+# Creating Sample Data (Dummy Content)
+
+## When User Requests: "Create dummy content" or similar
+
+**Context:** All schemas and components are already built. Only need to generate sample NDJSON data with placeholder images.
+
+---
+
+## Step 1: Gather Requirements
+
+Ask these questions:
+
+### Required Information
+
+1. **What content type(s)?** (pages, posts, projects, testimonials, etc.)
+2. **How many items?** (Default: 3-6)
+3. **What's it about?** (Theme, industry, use case, specific content focus)
+
+### Workflow Options
+
+**Option A - Full Site at Once:**
+
+- Describe everything you want (home page, about page, 5 projects, etc.)
+- I'll create one comprehensive NDJSON file with all content
+
+**Option B - Incremental/Page by Page:**
+
+- Describe home page → I create `sample-home.ndjson`
+- Describe about page → I create `sample-about.ndjson`
+- Describe projects → I create `sample-projects.ndjson`
+- You import each as you go
+
+**Both approaches work!** Choose what feels more manageable.
+
+---
+
+## Step 2: What I Will Deliver
+
+### Single NDJSON File: `sample-[name].ndjson`
+
+**Format:** NDJSON (one JSON object per line)
+
+**Contains:**
+
+- Complete document objects matching existing schema
+- Realistic, themed dummy content (NO "Lorem ipsum")
+- Proper Sanity document structure
+- **Placeholder images** using picsum.photos
+- References to existing documents when appropriate
+- Portable Text for rich content fields
+- All required and SEO fields
+
+**No Need For:**
+
+- ❌ assets.json file
+- ❌ Actual image files
+- ❌ Compressed archives (.tar.gz)
+- ❌ Manual image management
+
+**Import Command:**
+
+```bash
+npx sanity dataset import sample-[name].ndjson production
+```
+
+Sanity automatically fetches placeholder images on import!
+
+---
+
+## Placeholder Image Strategy
+
+### Using Picsum Photos
+
+**Format:**
+
+```json
+{
+  "_type": "image",
+  "_sanityAsset": "image@https://picsum.photos/seed/[UNIQUE_SEED]/[WIDTH]/[HEIGHT]",
+  "alt": "Descriptive alt text"
+}
+```
+
+### Image Sizes by Use Case
+
+**Hero Images:**
+
+```json
+{
+  "_sanityAsset": "image@https://picsum.photos/seed/hero-home/1920/1080",
+  "_type": "image",
+  "alt": "Homepage hero"
+}
+```
+
+**Card/Grid Images:**
+
+```json
+{
+  "_sanityAsset": "image@https://picsum.photos/seed/project-1/1200/630",
+  "_type": "image",
+  "alt": "Project thumbnail"
+}
+```
+
+**Portrait Images:**
+
+```json
+{
+  "_sanityAsset": "image@https://picsum.photos/seed/team-member-1/800/1200",
+  "_type": "image",
+  "alt": "Team member photo"
+}
+```
+
+**Square Images:**
+
+```json
+{
+  "_sanityAsset": "image@https://picsum.photos/seed/logo-partner-1/400/400",
+  "_type": "image",
+  "alt": "Partner logo"
+}
+```
+
+### Seed Strategy
+
+- Use descriptive, unique seeds for each image
+- Format: `{type}-{name}` or `{type}-{id}`
+- Examples: `hero-home`, `project-ecommerce`, `team-john`, `blog-post-1`
+- This ensures consistent images on re-import
+
+---
+
+## Document Structure Patterns
+
+### Basic Document
+
+```json
+{
+  "_id": "unique-uuid-here",
+  "_type": "document-type",
+  "_createdAt": "2025-09-24T01:00:00Z",
+  "_updatedAt": "2025-09-24T01:00:00Z",
+  "_rev": "randomRevisionId",
+  "title": "Document Title",
+  "slug": { "_type": "slug", "current": "document-slug" },
+  "image": {
+    "_type": "image",
+    "_sanityAsset": "image@https://picsum.photos/seed/doc-unique/1920/1080",
+    "alt": "Image description"
+  }
+}
+```
+
+### Document Reference
+
+```json
+{
+  "_ref": "existing-document-id",
+  "_type": "reference",
+  "_key": "unique-key"
+}
+```
+
+### Portable Text (Rich Content)
+
+```json
+[
+  {
+    "_key": "unique-key",
+    "_type": "block",
+    "children": [
+      {
+        "_key": "unique-key",
+        "_type": "span",
+        "marks": [],
+        "text": "Your content here"
+      }
+    ],
+    "markDefs": [],
+    "style": "normal"
+  }
+]
+```
+
+### Array with Objects
+
+```json
+[
+  {
+    "_key": "unique-key-1",
+    "_type": "item-type",
+    "title": "Item 1",
+    "image": {
+      "_type": "image",
+      "_sanityAsset": "image@https://picsum.photos/seed/item-1/800/600",
+      "alt": "Item 1 image"
+    }
+  }
+]
+```
+
+---
+
+## Content Generation Rules
+
+### Quality Standards
+
+- ✅ Write realistic, professional content
+- ✅ Match the theme/industry specified
+- ✅ Use proper grammar and formatting
+- ✅ Vary content length appropriately
+- ✅ Include relevant keywords naturally
+- ❌ NO "Lorem ipsum" or placeholder text
+- ❌ NO generic "Example 1, Example 2" naming
+
+### SEO Fields (Always Include)
+
+```json
+{
+  "meta_title": "Specific, descriptive title (50-60 chars)",
+  "meta_description": "Clear description with value prop (150-160 chars)",
+  "noindex": false
+}
+```
+
+### Dates and IDs
+
+- Use realistic recent dates (within last 6 months)
+- Generate proper UUID format for `_id`
+- Use ISO 8601 format: `2025-09-24T01:00:00Z`
+- Each `_key` must be unique within its context
+
+---
+
+## Common Content Types
+
+### Pages
+
+```json
+{
+  "_id": "home-page-uuid",
+  "_type": "page",
+  "title": "Home",
+  "slug": { "_type": "slug", "current": "index" },
+  "blocks": [
+    {
+      "_key": "hero-key",
+      "_type": "hero-1",
+      "title": "Welcome to Our Platform",
+      "image": {
+        "_type": "image",
+        "_sanityAsset": "image@https://picsum.photos/seed/hero-home/1920/1080",
+        "alt": "Platform overview"
+      }
+    }
+  ],
+  "meta_title": "Home - Platform Name",
+  "meta_description": "Build your business with our powerful platform",
+  "noindex": false
+}
+```
+
+### Posts/Projects
+
+```json
+{
+  "_id": "project-uuid",
+  "_type": "project",
+  "title": "E-commerce Platform Redesign",
+  "slug": { "_type": "slug", "current": "ecommerce-redesign" },
+  "excerpt": "Complete UX overhaul for leading fashion retailer",
+  "body": [],
+  "image": {
+    "_type": "image",
+    "_sanityAsset": "image@https://picsum.photos/seed/project-ecommerce/1200/630",
+    "alt": "E-commerce platform interface"
+  },
+  "meta_title": "E-commerce Platform Redesign Case Study",
+  "meta_description": "How we increased conversion by 45% with strategic UX"
+}
+```
+
+---
+
+## Example Workflow
+
+### User Request
+
+"Create dummy content for my portfolio site: home page, about page, and 5 web development projects"
+
+### My Response
+
+**Questions:**
+
+1. Content type: Pages + Projects ✓
+2. Quantity: 1 home, 1 about, 5 projects ✓
+3. Theme: What type of web development? (e.g., agency, freelance, specific tech stack)
+
+**After you answer, I deliver:**
+
+`sample-portfolio.ndjson` containing:
+
+- Home page with hero, featured projects, CTA
+- About page with bio, skills, experience
+- 5 project documents with realistic case studies
+- All with proper placeholder images
+- Complete SEO fields
+- Realistic professional content
+
+**Import:**
+
+```bash
+npx sanity dataset import sample-portfolio.ndjson production
+```
+
+---
+
+## Execution Checklist
+
+Before delivering, verify:
+
+- [ ] One JSON object per line (NDJSON format)
+- [ ] All required fields present
+- [ ] Realistic content (no placeholders)
+- [ ] Unique IDs and keys
+- [ ] Valid date formats (ISO 8601)
+- [ ] Placeholder images with unique seeds
+- [ ] SEO fields included
+- [ ] References point to existing documents (if applicable)
+- [ ] Portable Text properly formatted
+- [ ] Content matches specified theme
+
+---
+
+## Quick Reference
+
+### Common Placeholder Image Sizes

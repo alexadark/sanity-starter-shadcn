@@ -1,21 +1,29 @@
-import { sanityFetch } from "@/sanity/lib/live";
-import { PAGE_QUERY, PAGES_SLUGS_QUERY } from "@/sanity/queries/page";
-import { NAVIGATION_QUERY } from "@/sanity/queries/navigation";
-import { SETTINGS_QUERY } from "@/sanity/queries/settings";
+import { sanityFetch } from '@/sanity/lib/live';
+import { PAGE_QUERY, PAGES_SLUGS_QUERY } from '@/sanity/queries/page';
+import { NAVIGATION_QUERY } from '@/sanity/queries/navigation';
+import { SETTINGS_QUERY } from '@/sanity/queries/settings';
 import {
   POST_QUERY,
   POSTS_QUERY,
   POSTS_SLUGS_QUERY,
-} from "@/sanity/queries/post";
+} from '@/sanity/queries/post';
+import {
+  PROJECT_QUERY,
+  PROJECTS_QUERY,
+  PROJECTS_SLUGS_QUERY,
+} from '@/sanity/queries/project';
 import {
   PAGE_QUERYResult,
   PAGES_SLUGS_QUERYResult,
   POST_QUERYResult,
   POSTS_QUERYResult,
   POSTS_SLUGS_QUERYResult,
+  PROJECT_QUERYResult,
+  PROJECTS_QUERYResult,
+  PROJECTS_SLUGS_QUERYResult,
   NAVIGATION_QUERYResult,
   SETTINGS_QUERYResult,
-} from "@/sanity.types";
+} from '@/sanity.types';
 
 export const fetchSanityPageBySlug = async ({
   slug,
@@ -34,7 +42,7 @@ export const fetchSanityPagesStaticParams =
   async (): Promise<PAGES_SLUGS_QUERYResult> => {
     const { data } = await sanityFetch({
       query: PAGES_SLUGS_QUERY,
-      perspective: "published",
+      perspective: 'published',
       stega: false,
     });
 
@@ -66,7 +74,7 @@ export const fetchSanityPostsStaticParams =
   async (): Promise<POSTS_SLUGS_QUERYResult> => {
     const { data } = await sanityFetch({
       query: POSTS_SLUGS_QUERY,
-      perspective: "published",
+      perspective: 'published',
       stega: false,
     });
 
@@ -89,3 +97,35 @@ export const fetchSanitySettings = async (): Promise<SETTINGS_QUERYResult> => {
 
   return data;
 };
+
+export const fetchSanityProjects = async (): Promise<PROJECTS_QUERYResult> => {
+  const { data } = await sanityFetch({
+    query: PROJECTS_QUERY,
+  });
+
+  return data;
+};
+
+export const fetchSanityProjectBySlug = async ({
+  slug,
+}: {
+  slug: string;
+}): Promise<PROJECT_QUERYResult> => {
+  const { data } = await sanityFetch({
+    query: PROJECT_QUERY,
+    params: { slug },
+  });
+
+  return data;
+};
+
+export const fetchSanityProjectsStaticParams =
+  async (): Promise<PROJECTS_SLUGS_QUERYResult> => {
+    const { data } = await sanityFetch({
+      query: PROJECTS_SLUGS_QUERY,
+      perspective: 'published',
+      stega: false,
+    });
+
+    return data;
+  };

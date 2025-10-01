@@ -4,6 +4,7 @@
 export const ALL_BLOCKS = [
   { type: 'hero-1' },
   { type: 'hero-2' },
+  { type: 'hero-3' },
   { type: 'section-header' },
   { type: 'split-row' },
   { type: 'grid-row' },
@@ -17,6 +18,7 @@ export const ALL_BLOCKS = [
   { type: 'form-newsletter' },
   { type: 'all-posts' },
   { type: 'gallery-lightbox' },
+  { type: 'features-cards' },
 ];
 
 // Content blocks (without all-posts)
@@ -28,6 +30,7 @@ export const CONTENT_BLOCKS = ALL_BLOCKS.filter(
 export const MARKETING_BLOCKS = [
   { type: 'hero-1' },
   { type: 'hero-2' },
+  { type: 'hero-3' },
   { type: 'section-header' },
   { type: 'split-row' },
   { type: 'grid-row' },
@@ -40,6 +43,7 @@ export const MARKETING_BLOCKS = [
 // Portfolio/showcase blocks
 export const SHOWCASE_BLOCKS = [
   { type: 'hero-1' },
+  { type: 'hero-3' },
   { type: 'section-header' },
   { type: 'split-row' },
   { type: 'grid-row' },
@@ -50,7 +54,7 @@ export const SHOWCASE_BLOCKS = [
 
 // Insert menu groups configuration
 export const BLOCK_MENU_GROUPS = [
-  { name: 'hero', title: 'Hero', of: ['hero-1', 'hero-2'] },
+  { name: 'hero', title: 'Hero', of: ['hero-1', 'hero-2', 'hero-3'] },
   { name: 'section-header', title: 'Section Header', of: ['section-header'] },
   { name: 'split', title: 'Split', of: ['split-row'] },
   { name: 'grid', title: 'Grid', of: ['grid-row'] },
@@ -66,6 +70,7 @@ export const BLOCK_MENU_GROUPS = [
   { name: 'forms', title: 'Forms', of: ['form-newsletter'] },
   { name: 'all-posts', title: 'All Posts', of: ['all-posts'] },
   { name: 'gallery', title: 'Gallery', of: ['gallery-lightbox'] },
+  { name: 'features', title: 'Features', of: ['features-cards'] },
 ];
 
 // Insert menu views

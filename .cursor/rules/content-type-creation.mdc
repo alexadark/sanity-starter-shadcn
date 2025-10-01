@@ -1,6 +1,6 @@
 ---
 description: Workflow for creating new content types in Sanity with SEO and Studio integration
-globs: **/sanity/schemas/documents/*.ts
+globs: **/*.{ts,tsx,js,jsx}
 alwaysApply: false
 ---
 
@@ -37,6 +37,30 @@ Required elements:
 - `ogImage` (image, title: "Open Graph Image - [1200x630]")
 
 ### Adding Blocks Array:
+
+Use the `createBlocksField` helper with the appropriate block set:
+
+```typescript
+import {
+  SHOWCASE_BLOCKS,
+  createBlocksField,
+} from '../blocks/shared/block-configs';
+
+// In your schema fields:
+defineField({
+  ...createBlocksField(SHOWCASE_BLOCKS),
+  group: 'content',
+});
+```
+
+Available block sets:
+
+- `ALL_BLOCKS` - All available blocks including all-posts
+- `CONTENT_BLOCKS` - All blocks except all-posts
+- `MARKETING_BLOCKS` - Marketing-focused blocks (hero, cta, forms, etc.)
+- `SHOWCASE_BLOCKS` - Portfolio/showcase blocks (hero, split, grid, gallery, timeline)
+
+Or manually define blocks:
 
 ```typescript
 defineField({
@@ -149,14 +173,302 @@ orderableDocumentListDeskItem({
 }),
 ```
 
-## 4. Finish
+## 4. Create GROQ Queries: `sanity/queries/[name].ts`
 
-- Restart Studio dev server
-- Generate types: `npx sanity@latest typegen generate`
+Create queries for fetching the content type:
+
+```typescript
+import { groq } from 'next-sanity';
+import { hero1Query } from './hero/hero-1';
+import { sectionHeaderQuery } from './section-header';
+import { splitRowQuery } from './split/split-row';
+import { gridRowQuery } from './grid/grid-row';
+import { carouselGalleryQuery } from './carousel/carousel-gallery';
+import { timelineQuery } from './timeline';
+import { galleryLightboxQuery } from './gallery/gallery-lightbox';
+import { cta1Query } from './cta/cta-1';
+import { imageQuery } from './shared/image';
+
+// Single document query
+export const [CONTENTTYPE]_QUERY = groq`*[_type == "[contenttype]" && slug.current == $slug][0]{
+    title,
+    slug,
+    excerpt,
+    image{
+      ${imageQuery}
+    },
+    blocks[]{
+      ${hero1Query},
+      ${sectionHeaderQuery},
+      ${splitRowQuery},
+      ${gridRowQuery},
+      ${carouselGalleryQuery},
+      ${timelineQuery},
+      ${galleryLightboxQuery},
+      ${cta1Query},
+    },
+    categories[]->{
+      title,
+      slug
+    },
+    _createdAt,
+    _updatedAt,
+    meta_title,
+    meta_description,
+    noindex,
+    ogImage {
+      asset->{
+        _id,
+        url,
+        metadata {
+          dimensions {
+            width,
+            height
+          }
+        }
+      },
+    }
+}`;
+
+// List query
+export const [CONTENTTYPES]_QUERY = groq`*[_type == "[contenttype]" && defined(slug)] | order(_createdAt desc){
+    title,
+    slug,
+    excerpt,
+    image{
+      ${imageQuery}
+    },
+}`;
+
+// Slugs query (for static params)
+export const [CONTENTTYPES]_SLUGS_QUERY = groq`*[_type == "[contenttype]" && defined(slug)]{slug}`;
+```
+
+**Note:** Include only the block queries that match your schema's block configuration.
+
+## 5. Add Fetch Functions: `sanity/lib/fetch.ts`
+
+Import the queries:
+
+```typescript
+import {
+  [CONTENTTYPE]_QUERY,
+  [CONTENTTYPES]_QUERY,
+  [CONTENTTYPES]_SLUGS_QUERY,
+} from '@/sanity/queries/[contenttype]';
+```
+
+Import the TypeScript types:
+
+```typescript
+import {
+  [CONTENTTYPE]_QUERYResult,
+  [CONTENTTYPES]_QUERYResult,
+  [CONTENTTYPES]_SLUGS_QUERYResult,
+} from '@/sanity.types';
+```
+
+Add fetch functions at the end of the file:
+
+```typescript
+export const fetchSanity[ContentTypes] = async (): Promise<[CONTENTTYPES]_QUERYResult> => {
+  const { data } = await sanityFetch({
+    query: [CONTENTTYPES]_QUERY,
+  });
+
+  return data;
+};
+
+export const fetchSanity[ContentType]BySlug = async ({
+  slug,
+}: {
+  slug: string;
+}): Promise<[CONTENTTYPE]_QUERYResult> => {
+  const { data } = await sanityFetch({
+    query: [CONTENTTYPE]_QUERY,
+    params: { slug },
+  });
+
+  return data;
+};
+
+export const fetchSanity[ContentTypes]StaticParams =
+  async (): Promise<[CONTENTTYPES]_SLUGS_QUERYResult> => {
+    const { data } = await sanityFetch({
+      query: [CONTENTTYPES]_SLUGS_QUERY,
+      perspective: 'published',
+      stega: false,
+    });
+
+    return data;
+  };
+```
+
+## 6. Create Frontend Route: `app/(main)/[contenttypes]/[slug]/page.tsx`
+
+Create the dynamic route for displaying the content type:
+
+```typescript
+import Blocks from '@/components/blocks';
+import {
+  fetchSanity[ContentType]BySlug,
+  fetchSanity[ContentTypes]StaticParams,
+} from '@/sanity/lib/fetch';
+import { notFound } from 'next/navigation';
+import { generatePageMetadata } from '@/sanity/lib/metadata';
+
+export async function generateStaticParams() {
+  const [contenttypes] = await fetchSanity[ContentTypes]StaticParams();
+
+  return [contenttypes].map(([contenttype]) => ({
+    slug: [contenttype].slug?.current,
+  }));
+}
+
+export async function generateMetadata(props: {
+  params: Promise<{ slug: string }>;
+}) {
+  const params = await props.params;
+  const [contenttype] = await fetchSanity[ContentType]BySlug({ slug: params.slug });
+
+  if (![contenttype]) {
+    notFound();
+  }
+
+  return generatePageMetadata({
+    page: [contenttype],
+    slug: `[contenttypes]/${params.slug}`,
+  });
+}
+
+export default async function [ContentType]Page(props: {
+  params: Promise<{ slug: string }>;
+}) {
+  const params = await props.params;
+  const [contenttype] = await fetchSanity[ContentType]BySlug({ slug: params.slug });
+
+  if (![contenttype]) {
+    notFound();
+  }
+
+  return <Blocks blocks={[contenttype]?.blocks ?? []} />;
+}
+```
+
+**Alternative:** If your content type uses `body` instead of `blocks`, render it differently:
+
+```typescript
+import PortableTextRenderer from '@/components/portable-text-renderer';
+
+export default async function [ContentType]Page(props: {
+  params: Promise<{ slug: string }>;
+}) {
+  const params = await props.params;
+  const [contenttype] = await fetchSanity[ContentType]BySlug({ slug: params.slug });
+
+  if (![contenttype]) {
+    notFound();
+  }
+
+  return (
+    <section>
+      <div className="container py-16 xl:py-20">
+        <article className="max-w-3xl mx-auto">
+          <h1>{[contenttype].title}</h1>
+          {[contenttype].body && <PortableTextRenderer value={[contenttype].body} />}
+        </article>
+      </div>
+    </section>
+  );
+}
+```
+
+## 7. Generate TypeScript Types
+
+Run the type generation command:
+
+```bash
+npx sanity@latest typegen generate
+```
+
+This will generate TypeScript types for your new queries in `sanity.types.ts`.
+
+## 8. Optional: Create Index/List Page
+
+If you want a listing page (e.g., `/projects`), create `app/(main)/[contenttypes]/page.tsx`:
+
+```typescript
+import { fetchSanity[ContentTypes] } from '@/sanity/lib/fetch';
+import Link from 'next/link';
+// Import your card/list component
+
+export default async function [ContentTypes]Page() {
+  const [contenttypes] = await fetchSanity[ContentTypes]();
+
+  return (
+    <section>
+      <div className="container py-16 xl:py-20">
+        <h1>[ContentTypes]</h1>
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          {[contenttypes].map(([contenttype]) => (
+            <Link
+              key={[contenttype]?.slug?.current}
+              href={`/[contenttypes]/${[contenttype]?.slug?.current}`}
+            >
+              {/* Your card component here */}
+            </Link>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+```
 
 ## Checklist
 
 - [ ] Schema file created with all required fields
 - [ ] Registered in `sanity/schema.ts`
 - [ ] Added to `sanity/structure.ts`
-- [ ] Types generated
+- [ ] GROQ queries created
+- [ ] Fetch functions added
+- [ ] Frontend route created
+- [ ] Types generated (`npx sanity@latest typegen generate`)
+- [ ] Optional: Index/list page created
+- [ ] Test in Sanity Studio
+- [ ] Test frontend pages
+
+## Example: Complete Project Content Type
+
+Here's how the files look for a "project" content type:
+
+**Schema:** `sanity/schemas/documents/project.ts` ✓ (already exists)
+
+**Queries:** `sanity/queries/project.ts`
+
+```typescript
+export const PROJECT_QUERY = groq`*[_type == "project" && slug.current == $slug][0]{...}`;
+export const PROJECTS_QUERY = groq`*[_type == "project" && defined(slug)]...`;
+export const PROJECTS_SLUGS_QUERY = groq`*[_type == "project" && defined(slug)]{slug}`;
+```
+
+**Fetch:** `sanity/lib/fetch.ts` (add exports)
+
+```typescript
+export const fetchSanityProjects = async () => {...};
+export const fetchSanityProjectBySlug = async ({ slug }) => {...};
+export const fetchSanityProjectsStaticParams = async () => {...};
+```
+
+**Route:** `app/(main)/projects/[slug]/page.tsx`
+
+```typescript
+export default async function ProjectPage({ params }) {
+  const project = await fetchSanityProjectBySlug({ slug: params.slug });
+  return <Blocks blocks={project?.blocks ?? []} />;
+}
+```
+
+**URLs:**
+
+- `/projects/my-project-slug`

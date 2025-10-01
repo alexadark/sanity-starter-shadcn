@@ -19,6 +19,7 @@ import sectionPadding from './schemas/blocks/shared/section-padding';
 // Schema UI objects
 import hero1 from './schemas/blocks/hero/hero-1';
 import hero2 from './schemas/blocks/hero/hero-2';
+import hero3 from './schemas/blocks/hero/hero-3';
 import sectionHeader from './schemas/blocks/section-header';
 import splitRow from './schemas/blocks/split/split-row';
 import splitContent from './schemas/blocks/split/split-content';
@@ -43,6 +44,8 @@ import faqs from './schemas/blocks/faqs';
 import newsletter from './schemas/blocks/forms/newsletter';
 import allPosts from './schemas/blocks/all-posts';
 import galleryLightbox from './schemas/blocks/gallery/gallery-lightbox';
+import featuresCards from './schemas/blocks/features/features-cards';
+import featuresCard from './schemas/blocks/features/features-card';
 
 export const schema: { types: SchemaTypeDefinition[] } = {
   types: [
@@ -65,6 +68,7 @@ export const schema: { types: SchemaTypeDefinition[] } = {
     // blocks
     hero1,
     hero2,
+    hero3,
     sectionHeader,
     splitRow,
     splitContent,
@@ -89,5 +93,7 @@ export const schema: { types: SchemaTypeDefinition[] } = {
     newsletter,
     allPosts,
     galleryLightbox,
+    featuresCards,
+    featuresCard,
   ],
 };

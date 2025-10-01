@@ -11,6 +11,7 @@ import { presentationTool } from 'sanity/presentation';
 import { media } from 'sanity-plugin-media';
 import { imageAssetPickerPlugin } from 'sanity-plugin-image-asset-picker';
 import { unsplashImageAsset } from 'sanity-plugin-asset-source-unsplash';
+import { lucideIconPicker } from 'sanity-plugin-lucide-icon-picker';
 
 // Go to https://www.sanity.io/docs/api-versioning to learn how API versioning works
 import { apiVersion, dataset, projectId } from './sanity/env';
@@ -67,5 +68,6 @@ export default defineConfig({
     media(),
     imageAssetPickerPlugin(),
     unsplashImageAsset(),
+    lucideIconPicker(),
   ],
 });

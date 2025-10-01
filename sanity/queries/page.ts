@@ -16,6 +16,7 @@ import { formNewsletterQuery } from './forms/newsletter';
 import { allPostsQuery } from './all-posts';
 import { galleryLightboxQuery } from './gallery/gallery-lightbox';
 import { featuresCardsQuery } from './features/features-cards';
+import { team1Query } from './team/team-1';
 
 export const PAGE_QUERY = groq`
   *[_type == "page" && slug.current == $slug][0]{
@@ -37,6 +38,7 @@ export const PAGE_QUERY = groq`
       ${allPostsQuery},
       ${galleryLightboxQuery},
       ${featuresCardsQuery},
+      ${team1Query},
     },
     meta_title,
     meta_description,

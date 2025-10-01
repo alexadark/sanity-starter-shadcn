@@ -16,6 +16,7 @@ import link from './schemas/blocks/shared/link';
 import { colorVariant } from './schemas/blocks/shared/color-variant';
 import { buttonVariant } from './schemas/blocks/shared/button-variant';
 import sectionPadding from './schemas/blocks/shared/section-padding';
+import socialLink from './schemas/blocks/shared/social-links';
 // Schema UI objects
 import hero1 from './schemas/blocks/hero/hero-1';
 import hero2 from './schemas/blocks/hero/hero-2';
@@ -46,6 +47,7 @@ import allPosts from './schemas/blocks/all-posts';
 import galleryLightbox from './schemas/blocks/gallery/gallery-lightbox';
 import featuresCards from './schemas/blocks/features/features-cards';
 import featuresCard from './schemas/blocks/features/features-card';
+import team1 from './schemas/blocks/team/team-1';
 
 export const schema: { types: SchemaTypeDefinition[] } = {
   types: [
@@ -65,6 +67,7 @@ export const schema: { types: SchemaTypeDefinition[] } = {
     colorVariant,
     buttonVariant,
     sectionPadding,
+    socialLink,
     // blocks
     hero1,
     hero2,
@@ -95,5 +98,6 @@ export const schema: { types: SchemaTypeDefinition[] } = {
     galleryLightbox,
     featuresCards,
     featuresCard,
+    team1,
   ],
 };

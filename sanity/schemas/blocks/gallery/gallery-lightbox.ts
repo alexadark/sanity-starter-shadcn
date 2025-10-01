@@ -65,6 +65,7 @@ export default defineType({
           type: 'image',
           options: {
             hotspot: true,
+            accept: 'image/*',
           },
           fields: [
             defineField({
@@ -82,6 +83,9 @@ export default defineType({
           ],
         },
       ],
+      options: {
+        layout: 'grid',
+      },
       validation: (rule) =>
         rule
           .min(1)

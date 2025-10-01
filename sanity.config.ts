@@ -1,35 +1,37 @@
-"use client";
+'use client';
 
 /**
  * This configuration is used to for the Sanity Studio that’s mounted on the `/app/studio/[[...tool]]/page.tsx` route
  */
 
-import { visionTool } from "@sanity/vision";
-import { defineConfig } from "sanity";
-import { structureTool } from "sanity/structure";
-import { presentationTool } from "sanity/presentation";
+import { visionTool } from '@sanity/vision';
+import { defineConfig } from 'sanity';
+import { structureTool } from 'sanity/structure';
+import { presentationTool } from 'sanity/presentation';
+import { media } from 'sanity-plugin-media';
+import { imageAssetPickerPlugin } from 'sanity-plugin-image-asset-picker';
 
 // Go to https://www.sanity.io/docs/api-versioning to learn how API versioning works
-import { apiVersion, dataset, projectId } from "./sanity/env";
-import { schema } from "./sanity/schema";
-import { resolve } from "@/sanity/presentation/resolve";
-import { structure } from "./sanity/structure";
-import { codeInput } from "@sanity/code-input";
+import { apiVersion, dataset, projectId } from './sanity/env';
+import { schema } from './sanity/schema';
+import { resolve } from '@/sanity/presentation/resolve';
+import { structure } from './sanity/structure';
+import { codeInput } from '@sanity/code-input';
 
 // Define the actions that should be available for singleton documents
 const singletonActions = new Set([
-  "publish",
-  "discardChanges",
-  "restore",
-  "unpublish",
+  'publish',
+  'discardChanges',
+  'restore',
+  'unpublish',
 ]);
 
 // Define the singleton document types
-const singletonTypes = new Set(["settings"]);
+const singletonTypes = new Set(['settings']);
 
 export default defineConfig({
-  basePath: "/studio",
-  title: "Schema UI",
+  basePath: '/studio',
+  title: 'Schema UI',
   projectId,
   dataset,
   // Add and edit the content schema in the './sanity/schema' folder
@@ -52,7 +54,7 @@ export default defineConfig({
     presentationTool({
       previewUrl: {
         draftMode: {
-          enable: "/api/draft-mode/enable",
+          enable: '/api/draft-mode/enable',
         },
       },
       resolve,
@@ -61,5 +63,7 @@ export default defineConfig({
     // https://www.sanity.io/docs/the-vision-plugin
     visionTool({ defaultApiVersion: apiVersion }),
     codeInput(),
+    media(),
+    imageAssetPickerPlugin(),
   ],
 });

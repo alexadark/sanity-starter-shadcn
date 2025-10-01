@@ -1,0 +1,162 @@
+---
+description: Workflow for creating new content types in Sanity with SEO and Studio integration
+globs: **/sanity/schemas/documents/*.ts
+alwaysApply: false
+---
+
+# Creating New Content Types in Sanity
+
+## 1. Create Schema File: `sanity/schemas/documents/[name].ts`
+
+Required elements:
+
+- Import `defineField`, `defineType` from `sanity`
+- Import icon from `lucide-react`
+- Define 3 groups: `content`, `settings`, `seo`
+
+### Core Fields:
+
+**Content Group:**
+
+- `title` (string, required with validation error)
+- `excerpt` (text, optional)
+- `blocks` (array) OR `body` (block-content) for main content
+
+**Settings Group:**
+
+- `slug` (slug, required, source: title, maxLength: 96)
+- `image` (image with hotspot: true, alt field)
+- `categories` (array of category references) - if needed
+- `author` (reference to author) - if needed
+
+**SEO Group:**
+
+- `meta_title` (string)
+- `meta_description` (text)
+- `noindex` (boolean, initialValue: false)
+- `ogImage` (image, title: "Open Graph Image - [1200x630]")
+
+### Adding Blocks Array:
+
+```typescript
+defineField({
+  name: 'blocks',
+  type: 'array',
+  group: 'content',
+  of: [
+    { type: 'hero-1' },
+    { type: 'hero-2' },
+    { type: 'section-header' },
+    { type: 'split-row' },
+    { type: 'grid-row' },
+    { type: 'carousel-1' },
+    { type: 'carousel-2' },
+    { type: 'carousel-gallery' },
+    { type: 'timeline-row' },
+    { type: 'cta-1' },
+    { type: 'logo-cloud-1' },
+    { type: 'faqs' },
+    { type: 'form-newsletter' },
+    { type: 'gallery-lightbox' },
+  ],
+  options: {
+    insertMenu: {
+      groups: [
+        { name: 'hero', title: 'Hero', of: ['hero-1', 'hero-2'] },
+        {
+          name: 'section-header',
+          title: 'Section Header',
+          of: ['section-header'],
+        },
+        { name: 'split', title: 'Split', of: ['split-row'] },
+        { name: 'grid', title: 'Grid', of: ['grid-row'] },
+        {
+          name: 'carousel',
+          title: 'Carousel',
+          of: ['carousel-1', 'carousel-2', 'carousel-gallery'],
+        },
+        { name: 'timeline', title: 'Timeline', of: ['timeline-row'] },
+        { name: 'logo-cloud', title: 'Logo Cloud', of: ['logo-cloud-1'] },
+        { name: 'cta', title: 'CTA', of: ['cta-1'] },
+        { name: 'faqs', title: 'FAQs', of: ['faqs'] },
+        { name: 'forms', title: 'Forms', of: ['form-newsletter'] },
+        { name: 'gallery', title: 'Gallery', of: ['gallery-lightbox'] },
+      ],
+      views: [
+        {
+          name: 'grid',
+          previewImageUrl: (block) => `/sanity/preview/${block}.jpg`,
+        },
+        { name: 'list' },
+      ],
+    },
+  },
+});
+```
+
+### Custom Preview:
+
+```typescript
+preview: {
+  select: { title: 'title', media: 'image' },
+  prepare(selection) {
+    return { ...selection, subtitle: 'Contextual info here' };
+  },
+}
+```
+
+## 2. Register in `sanity/schema.ts`
+
+Import and add to types array:
+
+```typescript
+import [contentType] from './schemas/documents/[content-type]';
+
+export const schema: { types: SchemaTypeDefinition[] } = {
+  types: [
+    page, post, [contentType], author, category, // ... keep documents grouped
+  ],
+};
+```
+
+## 3. Add to `sanity/structure.ts`
+
+Import icon, then add list item:
+
+**Standard list (most common):**
+
+```typescript
+S.listItem()
+  .title('[Plural]')
+  .schemaType('[type]')
+  .icon([Icon])
+  .child(
+    S.documentTypeList('[type]')
+      .title('[Singular]')
+      .defaultOrdering([{ field: '_createdAt', direction: 'desc' }])
+  ),
+```
+
+**Orderable list (drag-and-drop):**
+
+```typescript
+orderableDocumentListDeskItem({
+  type: '[type]',
+  title: '[Plural]',
+  icon: [Icon],
+  S,
+  context,
+}),
+```
+
+## 4. Finish
+
+- Restart Studio dev server
+- Generate types: `npx sanity@latest typegen generate`
+
+## Checklist
+
+- [ ] Schema file created with all required fields
+- [ ] Registered in `sanity/schema.ts`
+- [ ] Added to `sanity/structure.ts`
+- [ ] Types generated

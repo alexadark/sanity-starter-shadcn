@@ -10,6 +10,7 @@ import { structureTool } from 'sanity/structure';
 import { presentationTool } from 'sanity/presentation';
 import { media } from 'sanity-plugin-media';
 import { imageAssetPickerPlugin } from 'sanity-plugin-image-asset-picker';
+import { unsplashImageAsset } from 'sanity-plugin-asset-source-unsplash';
 
 // Go to https://www.sanity.io/docs/api-versioning to learn how API versioning works
 import { apiVersion, dataset, projectId } from './sanity/env';
@@ -65,5 +66,6 @@ export default defineConfig({
     codeInput(),
     media(),
     imageAssetPickerPlugin(),
+    unsplashImageAsset(),
   ],
 });

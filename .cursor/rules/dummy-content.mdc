@@ -6,6 +6,25 @@ alwaysApply: false
 
 # Creating Sample Data (Dummy Content)
 
+## ⚠️ IMPORTANT: Only Create Dummy Content When Explicitly Requested
+
+**DO NOT systematically create dummy content when:**
+
+- Creating new components
+- Creating new document types
+- Creating new schemas
+- Implementing new features
+
+**ONLY create dummy content when:**
+
+- User explicitly asks for "dummy content", "sample data", "example content", or similar
+- User specifically requests NDJSON files for importing
+- Context clearly indicates they want sample data to test with
+
+**Default behavior:** When creating new components or document types, create ONLY the schema, queries, and React components. Let the user request dummy content separately if they need it.
+
+---
+
 ## When User Requests: "Create dummy content" or similar
 
 **Context:** All schemas and components are already built. Only need to generate sample NDJSON data with placeholder images.

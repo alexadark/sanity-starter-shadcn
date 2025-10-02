@@ -1,6 +1,6 @@
-import { groq } from "next-sanity";
-import { imageQuery } from "./shared/image";
-import { bodyQuery } from "./shared/body";
+import { groq } from 'next-sanity';
+import { imageQuery } from './shared/image';
+import { bodyQuery } from './shared/body';
 
 export const POST_QUERY = groq`*[_type == "post" && slug.current == $slug][0]{
     title,
@@ -56,6 +56,18 @@ export const POSTS_QUERY = groq`*[_type == "post" && defined(slug)] | order(_cre
     image{
       ${imageQuery}
     },
+}`;
+
+export const POSTS_PAGINATED_QUERY = groq`{
+  "posts": *[_type == "post" && defined(slug)] | order(_createdAt desc) [$start...$end]{
+    title,
+    slug,
+    excerpt,
+    image{
+      ${imageQuery}
+    },
+  },
+  "total": count(*[_type == "post" && defined(slug)])
 }`;
 
 export const POSTS_SLUGS_QUERY = groq`*[_type == "post" && defined(slug)]{slug}`;

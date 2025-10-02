@@ -4,6 +4,7 @@ import page from './schemas/documents/page';
 import post from './schemas/documents/post';
 import project from './schemas/documents/project';
 import projectsPage from './schemas/documents/projects-page';
+import blogPage from './schemas/documents/blog-page';
 import author from './schemas/documents/author';
 import category from './schemas/documents/category';
 import faq from './schemas/documents/faq';
@@ -59,6 +60,7 @@ export const schema: { types: SchemaTypeDefinition[] } = {
     post,
     project,
     projectsPage,
+    blogPage,
     author,
     category,
     faq,

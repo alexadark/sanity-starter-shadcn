@@ -8,6 +8,7 @@ import {
   Quote,
   Menu,
   Settings,
+  FileText,
 } from 'lucide-react';
 
 export const structure = (S: any, context: any) =>
@@ -75,6 +76,15 @@ export const structure = (S: any, context: any) =>
             .id('projects-page')
             .schemaType('projects-page')
             .documentId('projects-page')
+        ),
+      S.listItem()
+        .title('Blog Page')
+        .icon(FileText)
+        .child(
+          S.editor()
+            .id('blog-page')
+            .schemaType('blog-page')
+            .documentId('blog-page')
         ),
       S.listItem()
         .title('Navigation')

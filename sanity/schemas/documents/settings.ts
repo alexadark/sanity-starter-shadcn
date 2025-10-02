@@ -72,6 +72,16 @@ export default defineType({
         Rule.required().min(1).max(50).error('Must be between 1 and 50'),
     }),
     defineField({
+      name: 'postsPerPage',
+      type: 'number',
+      title: 'Posts Per Page',
+      group: 'general',
+      description: 'Number of posts to display per page on the blog listing',
+      initialValue: 10,
+      validation: (Rule) =>
+        Rule.required().min(1).max(50).error('Must be between 1 and 50'),
+    }),
+    defineField({
       name: 'menuPosition',
       type: 'string',
       title: 'Menu Position',
@@ -112,6 +122,7 @@ export default defineType({
                 { type: 'post' },
                 { type: 'project' },
                 { type: 'projects-page' },
+                { type: 'blog-page' },
                 { type: 'category' },
               ],
               hidden: ({ parent }) => parent?.isExternal,

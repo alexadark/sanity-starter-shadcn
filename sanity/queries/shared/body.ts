@@ -1,5 +1,5 @@
-import { linkQuery } from "./link";
-import { imageQuery } from "./image";
+import { linkQuery } from './link';
+import { imageQuery } from './image';
 
 export const bodyQuery = `
   ...,
@@ -11,5 +11,9 @@ export const bodyQuery = `
   },
   _type == "image" => {
     ${imageQuery}
+  },
+  _type == "youtube" => {
+    _type,
+    url
   }
 `;

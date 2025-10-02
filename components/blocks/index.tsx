@@ -18,6 +18,7 @@ import FeaturedProjects from '@/components/blocks/featured-projects';
 import GalleryLightbox from '@/components/blocks/gallery/gallery-lightbox';
 import FeaturesCards from '@/components/blocks/features/features-cards';
 import Team1 from '@/components/blocks/team/team-1';
+import ContentBlock from '@/components/blocks/content-block';
 
 type Block = NonNullable<NonNullable<PAGE_QUERYResult>['blocks']>[number];
 
@@ -43,6 +44,7 @@ const componentMap: {
   'gallery-lightbox': GalleryLightbox,
   'features-cards': FeaturesCards,
   'team-1': Team1,
+  'content-block': ContentBlock,
 };
 
 export default function Blocks({ blocks }: { blocks: Block[] }) {

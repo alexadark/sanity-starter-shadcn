@@ -50,6 +50,7 @@ import galleryLightbox from './schemas/blocks/gallery/gallery-lightbox';
 import featuresCards from './schemas/blocks/features/features-cards';
 import featuresCard from './schemas/blocks/features/features-card';
 import team1 from './schemas/blocks/team/team-1';
+import contentBlock from './schemas/blocks/content-block';
 
 export const schema: { types: SchemaTypeDefinition[] } = {
   types: [
@@ -103,5 +104,6 @@ export const schema: { types: SchemaTypeDefinition[] } = {
     featuresCards,
     featuresCard,
     team1,
+    contentBlock,
   ],
 };

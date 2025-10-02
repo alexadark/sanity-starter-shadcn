@@ -6,6 +6,8 @@ alwaysApply: false
 
 # Creating New Content Types in Sanity
 
+> **Note:** This workflow creates ONLY the schema, queries, and React components. Do NOT create dummy content/NDJSON files unless the user explicitly requests it separately.
+
 ## 1. Create Schema File: `sanity/schemas/documents/[name].ts`
 
 Required elements:

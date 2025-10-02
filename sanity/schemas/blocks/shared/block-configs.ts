@@ -6,6 +6,7 @@ export const ALL_BLOCKS = [
   { type: 'hero-2' },
   { type: 'hero-3' },
   { type: 'section-header' },
+  { type: 'content-block' },
   { type: 'split-row' },
   { type: 'grid-row' },
   { type: 'carousel-1' },
@@ -58,6 +59,7 @@ export const SHOWCASE_BLOCKS = [
 export const BLOCK_MENU_GROUPS = [
   { name: 'hero', title: 'Hero', of: ['hero-1', 'hero-2', 'hero-3'] },
   { name: 'section-header', title: 'Section Header', of: ['section-header'] },
+  { name: 'content', title: 'Content', of: ['content-block'] },
   { name: 'split', title: 'Split', of: ['split-row'] },
   { name: 'grid', title: 'Grid', of: ['grid-row'] },
   {

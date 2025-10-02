@@ -20,6 +20,7 @@ import { galleryLightboxQuery } from './gallery/gallery-lightbox';
 import { featuresCardsQuery } from './features/features-cards';
 import { team1Query } from './team/team-1';
 import { contentBlockQuery } from './content-block';
+import { contactInfoQuery } from './contact-info';
 
 export const PAGE_QUERY = groq`
   *[_type == "page" && slug.current == $slug][0]{
@@ -45,6 +46,7 @@ export const PAGE_QUERY = groq`
       ${featuresCardsQuery},
       ${team1Query},
       ${contentBlockQuery},
+      ${contactInfoQuery},
     },
     meta_title,
     meta_description,

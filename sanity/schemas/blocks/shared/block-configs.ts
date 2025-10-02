@@ -23,6 +23,7 @@ export const ALL_BLOCKS = [
   { type: 'gallery-lightbox' },
   { type: 'features-cards' },
   { type: 'team-1' },
+  { type: 'contact-info' },
 ];
 
 // Content blocks (without all-posts)
@@ -82,6 +83,7 @@ export const BLOCK_MENU_GROUPS = [
   { name: 'gallery', title: 'Gallery', of: ['gallery-lightbox'] },
   { name: 'features', title: 'Features', of: ['features-cards'] },
   { name: 'team', title: 'Team', of: ['team-1'] },
+  { name: 'contact', title: 'Contact', of: ['contact-info'] },
 ];
 
 // Insert menu views

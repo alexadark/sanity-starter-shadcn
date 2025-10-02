@@ -14,6 +14,7 @@ import { logoCloud1Query } from './logo-cloud/logo-cloud-1';
 import { faqsQuery } from './faqs';
 import { formNewsletterQuery } from './forms/newsletter';
 import { allPostsQuery } from './all-posts';
+import { featuredProjectsQuery } from './featured-projects';
 import { galleryLightboxQuery } from './gallery/gallery-lightbox';
 import { featuresCardsQuery } from './features/features-cards';
 import { team1Query } from './team/team-1';
@@ -36,6 +37,7 @@ export const PAGE_QUERY = groq`
       ${faqsQuery},
       ${formNewsletterQuery},
       ${allPostsQuery},
+      ${featuredProjectsQuery},
       ${galleryLightboxQuery},
       ${featuresCardsQuery},
       ${team1Query},

@@ -45,6 +45,7 @@ import logoCloud1 from './schemas/blocks/logo-cloud/logo-cloud-1';
 import faqs from './schemas/blocks/faqs';
 import newsletter from './schemas/blocks/forms/newsletter';
 import allPosts from './schemas/blocks/all-posts';
+import featuredProjects from './schemas/blocks/featured-projects';
 import galleryLightbox from './schemas/blocks/gallery/gallery-lightbox';
 import featuresCards from './schemas/blocks/features/features-cards';
 import featuresCard from './schemas/blocks/features/features-card';
@@ -97,6 +98,7 @@ export const schema: { types: SchemaTypeDefinition[] } = {
     faqs,
     newsletter,
     allPosts,
+    featuredProjects,
     galleryLightbox,
     featuresCards,
     featuresCard,

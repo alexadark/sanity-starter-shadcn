@@ -14,6 +14,7 @@ import LogoCloud1 from '@/components/blocks/logo-cloud/logo-cloud-1';
 import FAQs from '@/components/blocks/faqs';
 import FormNewsletter from '@/components/blocks/forms/newsletter';
 import AllPosts from '@/components/blocks/all-posts';
+import FeaturedProjects from '@/components/blocks/featured-projects';
 import GalleryLightbox from '@/components/blocks/gallery/gallery-lightbox';
 import FeaturesCards from '@/components/blocks/features/features-cards';
 import Team1 from '@/components/blocks/team/team-1';
@@ -38,6 +39,7 @@ const componentMap: {
   faqs: FAQs,
   'form-newsletter': FormNewsletter,
   'all-posts': AllPosts,
+  'featured-projects': FeaturedProjects,
   'gallery-lightbox': GalleryLightbox,
   'features-cards': FeaturesCards,
   'team-1': Team1,

@@ -13,6 +13,10 @@ import {
   PROJECTS_SLUGS_QUERY,
 } from '@/sanity/queries/project';
 import {
+  CATEGORY_QUERY,
+  CATEGORIES_SLUGS_QUERY,
+} from '@/sanity/queries/category';
+import {
   PAGE_QUERYResult,
   PAGES_SLUGS_QUERYResult,
   POST_QUERYResult,
@@ -21,6 +25,8 @@ import {
   PROJECT_QUERYResult,
   PROJECTS_QUERYResult,
   PROJECTS_SLUGS_QUERYResult,
+  CATEGORY_QUERYResult,
+  CATEGORIES_SLUGS_QUERYResult,
   NAVIGATION_QUERYResult,
   SETTINGS_QUERYResult,
 } from '@/sanity.types';
@@ -123,6 +129,30 @@ export const fetchSanityProjectsStaticParams =
   async (): Promise<PROJECTS_SLUGS_QUERYResult> => {
     const { data } = await sanityFetch({
       query: PROJECTS_SLUGS_QUERY,
+      perspective: 'published',
+      stega: false,
+    });
+
+    return data;
+  };
+
+export const fetchSanityCategoryBySlug = async ({
+  slug,
+}: {
+  slug: string;
+}): Promise<CATEGORY_QUERYResult> => {
+  const { data } = await sanityFetch({
+    query: CATEGORY_QUERY,
+    params: { slug },
+  });
+
+  return data;
+};
+
+export const fetchSanityCategoriesStaticParams =
+  async (): Promise<CATEGORIES_SLUGS_QUERYResult> => {
+    const { data } = await sanityFetch({
+      query: CATEGORIES_SLUGS_QUERY,
       perspective: 'published',
       stega: false,
     });

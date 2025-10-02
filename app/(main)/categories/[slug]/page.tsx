@@ -2,35 +2,63 @@ import { Suspense } from 'react';
 import { Metadata } from 'next';
 import Image from 'next/image';
 import Link from 'next/link';
+import { notFound } from 'next/navigation';
 import { sanityFetch } from '@/sanity/lib/live';
-import { PROJECTS_PAGINATED_QUERY } from '@/sanity/queries/project';
+import { CATEGORY_PROJECTS_PAGINATED_QUERY } from '@/sanity/queries/category';
+import { CATEGORIES_SLUGS_QUERY } from '@/sanity/queries/category';
 import { SETTINGS_QUERY } from '@/sanity/queries/settings';
-import { PROJECTS_PAGE_QUERY } from '@/sanity/queries/projects-page';
 import { urlFor } from '@/sanity/lib/image';
 import ProjectCard from '@/components/ui/project-card';
 import { Button } from '@/components/ui/button';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 
-export async function generateMetadata(): Promise<Metadata> {
-  const { data: pageData } = await sanityFetch({
-    query: PROJECTS_PAGE_QUERY,
+interface CategoryPageProps {
+  params: Promise<{ slug: string }>;
+  searchParams: Promise<{ page?: string }>;
+}
+
+export async function generateStaticParams() {
+  const { data } = await sanityFetch({
+    query: CATEGORIES_SLUGS_QUERY,
+    perspective: 'published',
+    stega: false,
   });
+
+  return data?.map((category) => ({
+    slug: category?.slug?.current,
+  }));
+}
+
+export async function generateMetadata({
+  params,
+}: CategoryPageProps): Promise<Metadata> {
+  const resolvedParams = await params;
+  const { data } = await sanityFetch({
+    query: CATEGORY_PROJECTS_PAGINATED_QUERY,
+    params: { slug: resolvedParams.slug, start: 0, end: 1 },
+  });
+
+  const category = data?.category;
+
+  if (!category) {
+    return {
+      title: 'Category Not Found',
+    };
+  }
 
   const isProduction = process.env.NEXT_PUBLIC_SITE_ENV === 'production';
 
   return {
-    title: pageData?.meta_title || 'Projects',
-    description:
-      pageData?.meta_description ||
-      'Explore our portfolio of innovative solutions and successful implementations',
+    title: category?.meta_title || category?.title,
+    description: category?.meta_description || category?.description,
     openGraph: {
       images: [
         {
-          url: pageData?.ogImage
-            ? urlFor(pageData.ogImage).quality(100).url()
+          url: category?.ogImage
+            ? urlFor(category.ogImage).quality(100).url()
             : `${process.env.NEXT_PUBLIC_SITE_URL}/images/og-image.jpg`,
-          width: pageData?.ogImage?.asset?.metadata?.dimensions?.width || 1200,
-          height: pageData?.ogImage?.asset?.metadata?.dimensions?.height || 630,
+          width: category?.ogImage?.asset?.metadata?.dimensions?.width || 1200,
+          height: category?.ogImage?.asset?.metadata?.dimensions?.height || 630,
         },
       ],
       locale: 'en_US',
@@ -38,30 +66,26 @@ export async function generateMetadata(): Promise<Metadata> {
     },
     robots: !isProduction
       ? 'noindex, nofollow'
-      : pageData?.noindex
+      : category?.noindex
         ? 'noindex'
         : 'index, follow',
     alternates: {
-      canonical: process.env.NEXT_PUBLIC_SITE_URL + '/projects',
+      canonical:
+        process.env.NEXT_PUBLIC_SITE_URL + `/categories/${resolvedParams.slug}`,
     },
   };
 }
 
-interface ProjectsPageProps {
-  searchParams: Promise<{ page?: string }>;
-}
-
-export default async function ProjectsPage({
+export default async function CategoryPage({
+  params,
   searchParams,
-}: ProjectsPageProps) {
-  const [{ data: settings }, { data: pageData }, resolvedSearchParams] =
+}: CategoryPageProps) {
+  const [{ data: settings }, resolvedParams, resolvedSearchParams] =
     await Promise.all([
       sanityFetch({
         query: SETTINGS_QUERY,
       }),
-      sanityFetch({
-        query: PROJECTS_PAGE_QUERY,
-      }),
+      params,
       searchParams,
     ]);
 
@@ -71,19 +95,23 @@ export default async function ProjectsPage({
   const end = start + projectsPerPage;
 
   const { data } = await sanityFetch({
-    query: PROJECTS_PAGINATED_QUERY,
-    params: { start, end },
+    query: CATEGORY_PROJECTS_PAGINATED_QUERY,
+    params: { slug: resolvedParams.slug, start, end },
   });
 
+  const category = data?.category;
   const projects = data?.projects || [];
   const total = data?.total || 0;
+  const firstProjectImage = data?.firstProjectImage;
+
+  if (!category) {
+    notFound();
+  }
+
   const totalPages = Math.ceil(total / projectsPerPage);
 
-  const heroTitle = pageData?.title || 'Our Projects';
-  const heroSubtitle =
-    pageData?.subtitle ||
-    'Explore our portfolio of innovative solutions and successful implementations';
-  const heroImage = pageData?.heroImage;
+  // Use category image or fallback to first project image
+  const heroImage = category?.image || firstProjectImage;
 
   return (
     <>
@@ -92,7 +120,7 @@ export default async function ProjectsPage({
         {heroImage && heroImage.asset?._id ? (
           <Image
             src={urlFor(heroImage).url()}
-            alt={heroImage.alt || heroTitle}
+            alt={heroImage.alt || category?.title || ''}
             fill
             className="object-cover"
             priority
@@ -102,7 +130,7 @@ export default async function ProjectsPage({
         ) : (
           <Image
             src="/images/placeholder.svg"
-            alt="Projects Hero"
+            alt={category?.title || 'Category'}
             fill
             className="object-cover"
             priority
@@ -112,11 +140,11 @@ export default async function ProjectsPage({
         <div className="absolute inset-0 flex items-center justify-center">
           <div className="container text-center text-white">
             <h1 className="font-bold text-4xl md:text-5xl lg:text-6xl mb-4">
-              {heroTitle}
+              {category?.title}
             </h1>
-            {heroSubtitle && (
+            {category?.description && (
               <p className="text-lg md:text-xl max-w-2xl mx-auto">
-                {heroSubtitle}
+                {category.description}
               </p>
             )}
           </div>
@@ -150,7 +178,9 @@ export default async function ProjectsPage({
                 <div className="flex justify-center items-center gap-2">
                   {currentPage > 1 && (
                     <Button variant="outline" size="icon" asChild>
-                      <Link href={`/projects?page=${currentPage - 1}`}>
+                      <Link
+                        href={`/categories/${resolvedParams.slug}?page=${currentPage - 1}`}
+                      >
                         <ChevronLeft className="h-4 w-4" />
                       </Link>
                     </Button>
@@ -174,7 +204,9 @@ export default async function ProjectsPage({
                               size="icon"
                               asChild
                             >
-                              <Link href={`/projects?page=${page}`}>
+                              <Link
+                                href={`/categories/${resolvedParams.slug}?page=${page}`}
+                              >
                                 {page}
                               </Link>
                             </Button>
@@ -196,7 +228,9 @@ export default async function ProjectsPage({
 
                   {currentPage < totalPages && (
                     <Button variant="outline" size="icon" asChild>
-                      <Link href={`/projects?page=${currentPage + 1}`}>
+                      <Link
+                        href={`/categories/${resolvedParams.slug}?page=${currentPage + 1}`}
+                      >
                         <ChevronRight className="h-4 w-4" />
                       </Link>
                     </Button>
@@ -206,7 +240,9 @@ export default async function ProjectsPage({
             </>
           ) : (
             <div className="text-center py-12">
-              <p className="text-muted-foreground">No projects found.</p>
+              <p className="text-muted-foreground">
+                No projects found in this category.
+              </p>
             </div>
           )}
         </Suspense>

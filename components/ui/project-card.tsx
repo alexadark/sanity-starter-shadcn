@@ -1,5 +1,8 @@
+'use client';
+
 import { cn } from '@/lib/utils';
 import Image from 'next/image';
+import Link from 'next/link';
 import { urlFor } from '@/sanity/lib/image';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -45,9 +48,19 @@ export default function ProjectCard({
         {categories && categories.length > 0 && (
           <div className="flex flex-wrap gap-2 mb-3">
             {categories.map((category) => (
-              <Badge key={category?.slug?.current} variant="secondary">
-                {category?.title}
-              </Badge>
+              <Link
+                key={category?.slug?.current}
+                href={`/categories/${category?.slug?.current}`}
+                onClick={(e) => e.stopPropagation()}
+                className="ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 rounded-full"
+              >
+                <Badge
+                  variant="secondary"
+                  className="hover:bg-primary hover:text-primary-foreground transition-colors"
+                >
+                  {category?.title}
+                </Badge>
+              </Link>
             ))}
           </div>
         )}

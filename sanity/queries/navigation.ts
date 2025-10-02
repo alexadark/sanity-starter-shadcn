@@ -9,9 +9,19 @@ export const NAVIGATION_QUERY = groq`
       _key,
       _type,
       title,
+      hasSubmenu,
       buttonVariant,
       target,
-      ${linkQuery}
+      ${linkQuery},
+      subItems[]{
+        _key,
+        title,
+        description,
+        icon,
+        isExternal,
+        target,
+        ${linkQuery}
+      }
     }
   }
 `;

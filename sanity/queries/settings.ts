@@ -1,4 +1,5 @@
 import { groq } from 'next-sanity';
+import { linkQuery } from './shared/link';
 
 export const SETTINGS_QUERY = groq`*[_type == "settings"][0]{
   _type,
@@ -36,6 +37,15 @@ export const SETTINGS_QUERY = groq`*[_type == "settings"][0]{
     },
     width,
     height,
+  },
+  footerLinks[]{
+    ${linkQuery}
+  },
+  socialLinks[]{
+    _key,
+    _type,
+    platform,
+    url
   },
   copyright,
   projectsPerPage

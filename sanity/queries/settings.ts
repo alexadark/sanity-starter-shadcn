@@ -38,6 +38,15 @@ export const SETTINGS_QUERY = groq`*[_type == "settings"][0]{
     width,
     height,
   },
+  menuPosition,
+  headerButtons[]{
+    _key,
+    _type,
+    title,
+    buttonVariant,
+    target,
+    ${linkQuery}
+  },
   footerLinks[]{
     ${linkQuery}
   },

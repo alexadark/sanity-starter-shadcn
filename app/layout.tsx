@@ -1,7 +1,8 @@
 import type { Metadata } from 'next';
 import {
-  Geist_Mono as FontSans,
-  JetBrains_Mono as FontMono
+  Oxanium as FontSans,
+  Merriweather as FontSerif,
+  Fira_Code as FontMono
 } from "next/font/google";
 import './globals.css';
 import { cn } from '@/lib/utils';
@@ -32,17 +33,19 @@ export const metadata: Metadata = {
 
 const fontSans = FontSans({
   subsets: ['latin'],
-  weight: ["100","200","300","400","500","600","700","800"],
+  weight: ["400","500","600","700"],
   variable: '--font-sans',
 });
 
-const fontSerif = {
+const fontSerif = FontSerif({
+  subsets: ['latin'],
+  weight: ["300","400","700","900"],
   variable: '--font-serif',
-};
+});
 
 const fontMono = FontMono({
   subsets: ['latin'],
-  weight: ["100","200","300","400","500","600","700","800"],
+  weight: ["400","500","600","700"],
   variable: '--font-mono',
 });
 
@@ -62,8 +65,8 @@ export default function RootLayout({
       >
         <ThemeProvider
           attribute="class"
-          defaultTheme="system"
-          enableSystem
+          defaultTheme="dark"
+          enableSystem={false}
           disableTransitionOnChange
         >
           {children}

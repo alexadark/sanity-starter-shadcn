@@ -6,6 +6,11 @@ export const NAVIGATION_QUERY = groq`
     _type,
     _key,
     links[]{
+      _key,
+      _type,
+      title,
+      buttonVariant,
+      target,
       ${linkQuery}
     }
   }

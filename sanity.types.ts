@@ -13,6 +13,66 @@
  */
 
 // Source: schema.json
+export type ContentBlock = {
+  _type: "content-block";
+  padding?: SectionPadding;
+  colorVariant?: "background" | "primary" | "secondary" | "card" | "accent" | "destructive" | "muted";
+  sectionWidth?: "default" | "narrow";
+  stackAlign?: "left" | "center";
+  tagLine?: string;
+  title?: string;
+  content?: Array<{
+    children?: Array<{
+      marks?: Array<string>;
+      text?: string;
+      _type: "span";
+      _key: string;
+    }>;
+    style?: "normal" | "h1" | "h2" | "h3" | "h4" | "blockquote";
+    listItem?: "bullet" | "number";
+    markDefs?: Array<{
+      isExternal?: boolean;
+      internalLink?: {
+        _ref: string;
+        _type: "reference";
+        _weak?: boolean;
+        [internalGroqTypeReferenceTo]?: "page";
+      } | {
+        _ref: string;
+        _type: "reference";
+        _weak?: boolean;
+        [internalGroqTypeReferenceTo]?: "post";
+      };
+      href?: string;
+      target?: boolean;
+      _type: "link";
+      _key: string;
+    }>;
+    level?: number;
+    _type: "block";
+    _key: string;
+  } | {
+    asset?: {
+      _ref: string;
+      _type: "reference";
+      _weak?: boolean;
+      [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
+    };
+    media?: unknown;
+    hotspot?: SanityImageHotspot;
+    crop?: SanityImageCrop;
+    alt?: string;
+    _type: "image";
+    _key: string;
+  } | {
+    url?: string;
+    _type: "youtube";
+    _key: string;
+  } | {
+    _key: string;
+  } & Code>;
+};
+
 export type Team1 = {
   _type: "team-1";
   padding?: SectionPadding;
@@ -105,6 +165,23 @@ export type GalleryLightbox = {
     _type: "image";
     _key: string;
   }>;
+};
+
+export type FeaturedProjects = {
+  _type: "featured-projects";
+  padding?: SectionPadding;
+  colorVariant?: "background" | "primary" | "secondary" | "card" | "accent" | "destructive" | "muted";
+  title?: string;
+  projects?: Array<{
+    _ref: string;
+    _type: "reference";
+    _weak?: boolean;
+    _key: string;
+    [internalGroqTypeReferenceTo]?: "project";
+  }>;
+  showViewAllButton?: boolean;
+  viewAllButtonText?: string;
+  viewAllButtonVariant?: "default" | "destructive" | "outline" | "secondary" | "ghost" | "link";
 };
 
 export type AllPosts = {
@@ -209,7 +286,7 @@ export type Cta1 = {
     _type: "image";
     _key: string;
   } | {
-    videoId?: string;
+    url?: string;
     _type: "youtube";
     _key: string;
   } | {
@@ -268,7 +345,7 @@ export type Timelines1 = {
     _type: "image";
     _key: string;
   } | {
-    videoId?: string;
+    url?: string;
     _type: "youtube";
     _key: string;
   } | {
@@ -469,7 +546,7 @@ export type SplitInfo = {
     _type: "image";
     _key: string;
   } | {
-    videoId?: string;
+    url?: string;
     _type: "youtube";
     _key: string;
   } | {
@@ -550,7 +627,7 @@ export type SplitCard = {
     _type: "image";
     _key: string;
   } | {
-    videoId?: string;
+    url?: string;
     _type: "youtube";
     _key: string;
   } | {
@@ -616,7 +693,7 @@ export type SplitContent = {
     _type: "image";
     _key: string;
   } | {
-    videoId?: string;
+    url?: string;
     _type: "youtube";
     _key: string;
   } | {
@@ -722,7 +799,7 @@ export type Hero2 = {
     _type: "image";
     _key: string;
   } | {
-    videoId?: string;
+    url?: string;
     _type: "youtube";
     _key: string;
   } | {
@@ -781,7 +858,7 @@ export type Hero1 = {
     _type: "image";
     _key: string;
   } | {
-    videoId?: string;
+    url?: string;
     _type: "youtube";
     _key: string;
   } | {
@@ -834,6 +911,21 @@ export type Link = {
     _type: "reference";
     _weak?: boolean;
     [internalGroqTypeReferenceTo]?: "post";
+  } | {
+    _ref: string;
+    _type: "reference";
+    _weak?: boolean;
+    [internalGroqTypeReferenceTo]?: "project";
+  } | {
+    _ref: string;
+    _type: "reference";
+    _weak?: boolean;
+    [internalGroqTypeReferenceTo]?: "projects-page";
+  } | {
+    _ref: string;
+    _type: "reference";
+    _weak?: boolean;
+    [internalGroqTypeReferenceTo]?: "category";
   };
   title?: string;
   href?: string;
@@ -885,7 +977,7 @@ export type BlockContent = Array<{
   _type: "image";
   _key: string;
 } | {
-  videoId?: string;
+  url?: string;
   _type: "youtube";
   _key: string;
 } | {
@@ -927,6 +1019,48 @@ export type Settings = {
     height?: number;
   };
   siteName?: string;
+  projectsPerPage?: number;
+  menuPosition?: "left" | "center" | "right";
+  headerButtons?: Array<{
+    isExternal?: boolean;
+    internalLink?: {
+      _ref: string;
+      _type: "reference";
+      _weak?: boolean;
+      [internalGroqTypeReferenceTo]?: "page";
+    } | {
+      _ref: string;
+      _type: "reference";
+      _weak?: boolean;
+      [internalGroqTypeReferenceTo]?: "post";
+    } | {
+      _ref: string;
+      _type: "reference";
+      _weak?: boolean;
+      [internalGroqTypeReferenceTo]?: "project";
+    } | {
+      _ref: string;
+      _type: "reference";
+      _weak?: boolean;
+      [internalGroqTypeReferenceTo]?: "projects-page";
+    } | {
+      _ref: string;
+      _type: "reference";
+      _weak?: boolean;
+      [internalGroqTypeReferenceTo]?: "category";
+    };
+    title?: string;
+    href?: string;
+    target?: boolean;
+    buttonVariant?: ButtonVariant;
+    _key: string;
+  }>;
+  footerLinks?: Array<{
+    _key: string;
+  } & Link>;
+  socialLinks?: Array<{
+    _key: string;
+  } & SocialLink>;
   copyright?: BlockContent;
 };
 
@@ -937,8 +1071,39 @@ export type Navigation = {
   _updatedAt: string;
   _rev: string;
   links?: Array<{
+    isExternal?: boolean;
+    internalLink?: {
+      _ref: string;
+      _type: "reference";
+      _weak?: boolean;
+      [internalGroqTypeReferenceTo]?: "page";
+    } | {
+      _ref: string;
+      _type: "reference";
+      _weak?: boolean;
+      [internalGroqTypeReferenceTo]?: "post";
+    } | {
+      _ref: string;
+      _type: "reference";
+      _weak?: boolean;
+      [internalGroqTypeReferenceTo]?: "project";
+    } | {
+      _ref: string;
+      _type: "reference";
+      _weak?: boolean;
+      [internalGroqTypeReferenceTo]?: "projects-page";
+    } | {
+      _ref: string;
+      _type: "reference";
+      _weak?: boolean;
+      [internalGroqTypeReferenceTo]?: "category";
+    };
+    title?: string;
+    href?: string;
+    target?: boolean;
+    buttonVariant?: ButtonVariant;
     _key: string;
-  } & Link>;
+  }>;
 };
 
 export type Testimonial = {
@@ -984,7 +1149,75 @@ export type Category = {
   _updatedAt: string;
   _rev: string;
   title?: string;
+  slug?: Slug;
+  description?: string;
+  image?: {
+    asset?: {
+      _ref: string;
+      _type: "reference";
+      _weak?: boolean;
+      [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
+    };
+    media?: unknown;
+    hotspot?: SanityImageHotspot;
+    crop?: SanityImageCrop;
+    alt?: string;
+    _type: "image";
+  };
+  meta_title?: string;
+  meta_description?: string;
+  noindex?: boolean;
+  ogImage?: {
+    asset?: {
+      _ref: string;
+      _type: "reference";
+      _weak?: boolean;
+      [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
+    };
+    media?: unknown;
+    hotspot?: SanityImageHotspot;
+    crop?: SanityImageCrop;
+    _type: "image";
+  };
   orderRank?: string;
+};
+
+export type ProjectsPage = {
+  _id: string;
+  _type: "projects-page";
+  _createdAt: string;
+  _updatedAt: string;
+  _rev: string;
+  title?: string;
+  subtitle?: string;
+  heroImage?: {
+    asset?: {
+      _ref: string;
+      _type: "reference";
+      _weak?: boolean;
+      [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
+    };
+    media?: unknown;
+    hotspot?: SanityImageHotspot;
+    crop?: SanityImageCrop;
+    alt?: string;
+    _type: "image";
+  };
+  meta_title?: string;
+  meta_description?: string;
+  noindex?: boolean;
+  ogImage?: {
+    asset?: {
+      _ref: string;
+      _type: "reference";
+      _weak?: boolean;
+      [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
+    };
+    media?: unknown;
+    hotspot?: SanityImageHotspot;
+    crop?: SanityImageCrop;
+    _type: "image";
+  };
 };
 
 export type Project = {
@@ -1068,6 +1301,8 @@ export type Page = {
     _key: string;
   } & SectionHeader | {
     _key: string;
+  } & ContentBlock | {
+    _key: string;
   } & SplitRow | {
     _key: string;
   } & GridRow | {
@@ -1089,6 +1324,8 @@ export type Page = {
   } & FormNewsletter | {
     _key: string;
   } & AllPosts | {
+    _key: string;
+  } & FeaturedProjects | {
     _key: string;
   } & GalleryLightbox | {
     _key: string;
@@ -1327,7 +1564,7 @@ export type SanityAssetSourceData = {
   url?: string;
 };
 
-export type AllSanitySchemaTypes = Team1 | FeaturesCard | FeaturesCards | GalleryLightbox | AllPosts | FormNewsletter | Faqs | LogoCloud1 | Cta1 | Timelines1 | TimelineRow | CarouselGalleryItem | CarouselGallery | Carousel2 | Carousel1 | GridRow | GridPost | PricingCard | GridCard | SplitInfo | SplitInfoList | SplitImage | SplitCard | SplitCardsList | SplitContent | SplitRow | SectionHeader | Hero3 | Hero2 | Hero1 | SocialLink | SectionPadding | ButtonVariant | ColorVariant | Link | BlockContent | Settings | Navigation | Testimonial | Faq | Category | Project | Page | Post | Author | LucideIcon | MediaTag | Code | SanityImagePaletteSwatch | SanityImagePalette | SanityImageDimensions | SanityImageHotspot | SanityImageCrop | SanityFileAsset | SanityImageAsset | SanityImageMetadata | Geopoint | Slug | SanityAssetSourceData;
+export type AllSanitySchemaTypes = ContentBlock | Team1 | FeaturesCard | FeaturesCards | GalleryLightbox | FeaturedProjects | AllPosts | FormNewsletter | Faqs | LogoCloud1 | Cta1 | Timelines1 | TimelineRow | CarouselGalleryItem | CarouselGallery | Carousel2 | Carousel1 | GridRow | GridPost | PricingCard | GridCard | SplitInfo | SplitInfoList | SplitImage | SplitCard | SplitCardsList | SplitContent | SplitRow | SectionHeader | Hero3 | Hero2 | Hero1 | SocialLink | SectionPadding | ButtonVariant | ColorVariant | Link | BlockContent | Settings | Navigation | Testimonial | Faq | Category | ProjectsPage | Project | Page | Post | Author | LucideIcon | MediaTag | Code | SanityImagePaletteSwatch | SanityImagePalette | SanityImageDimensions | SanityImageHotspot | SanityImageCrop | SanityFileAsset | SanityImageAsset | SanityImageMetadata | Geopoint | Slug | SanityAssetSourceData;
 export declare const internalGroqTypeReferenceTo: unique symbol;
 // Source: ./app/sitemap.ts
 // Variable: pagesQuery
@@ -1352,26 +1589,84 @@ export type PostsQueryResult = Array<{
 // Query: *[_type == "category" && slug.current == $slug][0]{  title,  slug,  description,  image{      ...,  asset->{    _id,    url,    mimeType,    metadata {      lqip,      dimensions {        width,        height      }    }  }  },  meta_title,  meta_description,  noindex,  ogImage {    asset->{      _id,      url,      metadata {        dimensions {          width,          height        }      }    },  }}
 export type CATEGORY_QUERYResult = {
   title: string | null;
-  slug: null;
-  description: null;
-  image: null;
-  meta_title: null;
-  meta_description: null;
-  noindex: null;
-  ogImage: null;
+  slug: Slug | null;
+  description: string | null;
+  image: {
+    asset: {
+      _id: string;
+      url: string | null;
+      mimeType: string | null;
+      metadata: {
+        lqip: string | null;
+        dimensions: {
+          width: number | null;
+          height: number | null;
+        } | null;
+      } | null;
+    } | null;
+    media?: unknown;
+    hotspot?: SanityImageHotspot;
+    crop?: SanityImageCrop;
+    alt?: string;
+    _type: "image";
+  } | null;
+  meta_title: string | null;
+  meta_description: string | null;
+  noindex: boolean | null;
+  ogImage: {
+    asset: {
+      _id: string;
+      url: string | null;
+      metadata: {
+        dimensions: {
+          width: number | null;
+          height: number | null;
+        } | null;
+      } | null;
+    } | null;
+  } | null;
 } | null;
 // Variable: CATEGORY_PROJECTS_PAGINATED_QUERY
 // Query: {  "category": *[_type == "category" && slug.current == $slug][0]{    title,    slug,    description,    image{        ...,  asset->{    _id,    url,    mimeType,    metadata {      lqip,      dimensions {        width,        height      }    }  }    },    meta_title,    meta_description,    noindex,    ogImage {      asset->{        _id,        url,        metadata {          dimensions {            width,            height          }        }      },    }  },  "projects": *[_type == "project" && defined(slug) && references(*[_type == "category" && slug.current == $slug][0]._id)] | order(_createdAt desc) [$start...$end]{    title,    slug,    excerpt,    image{        ...,  asset->{    _id,    url,    mimeType,    metadata {      lqip,      dimensions {        width,        height      }    }  }    },    categories[]->{      title,      slug    },  },  "total": count(*[_type == "project" && defined(slug) && references(*[_type == "category" && slug.current == $slug][0]._id)]),  "firstProjectImage": *[_type == "project" && defined(slug) && references(*[_type == "category" && slug.current == $slug][0]._id)] | order(_createdAt desc) [0].image{      ...,  asset->{    _id,    url,    mimeType,    metadata {      lqip,      dimensions {        width,        height      }    }  }  }}
 export type CATEGORY_PROJECTS_PAGINATED_QUERYResult = {
   category: {
     title: string | null;
-    slug: null;
-    description: null;
-    image: null;
-    meta_title: null;
-    meta_description: null;
-    noindex: null;
-    ogImage: null;
+    slug: Slug | null;
+    description: string | null;
+    image: {
+      asset: {
+        _id: string;
+        url: string | null;
+        mimeType: string | null;
+        metadata: {
+          lqip: string | null;
+          dimensions: {
+            width: number | null;
+            height: number | null;
+          } | null;
+        } | null;
+      } | null;
+      media?: unknown;
+      hotspot?: SanityImageHotspot;
+      crop?: SanityImageCrop;
+      alt?: string;
+      _type: "image";
+    } | null;
+    meta_title: string | null;
+    meta_description: string | null;
+    noindex: boolean | null;
+    ogImage: {
+      asset: {
+        _id: string;
+        url: string | null;
+        metadata: {
+          dimensions: {
+            width: number | null;
+            height: number | null;
+          } | null;
+        } | null;
+      } | null;
+    } | null;
   } | null;
   projects: Array<{
     title: string | null;
@@ -1398,7 +1693,7 @@ export type CATEGORY_PROJECTS_PAGINATED_QUERYResult = {
     } | null;
     categories: Array<{
       title: string | null;
-      slug: null;
+      slug: Slug | null;
     }> | null;
   }>;
   total: number;
@@ -1424,19 +1719,29 @@ export type CATEGORY_PROJECTS_PAGINATED_QUERYResult = {
 };
 // Variable: CATEGORIES_SLUGS_QUERY
 // Query: *[_type == "category" && defined(slug)]{slug}
-export type CATEGORIES_SLUGS_QUERYResult = Array<never>;
+export type CATEGORIES_SLUGS_QUERYResult = Array<{
+  slug: Slug | null;
+}>;
 
 // Source: ./sanity/queries/navigation.ts
 // Variable: NAVIGATION_QUERY
-// Query: *[_type == "navigation"]{    _type,    _key,    links[]{          _key,    ...,    "href": select(      isExternal => href,      defined(href) && !defined(internalLink) => href,      @.internalLink->slug.current == "index" => "/",      @.internalLink->_type == "post" => "/blog/" + @.internalLink->slug.current,      @.internalLink->_type == "project" => "/projects/" + @.internalLink->slug.current,      @.internalLink->_type == "projects-page" => "/projects",      @.internalLink->_type == "category" => "/categories/" + @.internalLink->slug.current,      "/" + @.internalLink->slug.current    )    }  }
+// Query: *[_type == "navigation"]{    _type,    _key,    links[]{      _key,      _type,      title,      buttonVariant,      target,          _key,    ...,    "href": select(      isExternal => href,      defined(href) && !defined(internalLink) => href,      @.internalLink->slug.current == "index" => "/",      @.internalLink->_type == "post" => "/blog/" + @.internalLink->slug.current,      @.internalLink->_type == "project" => "/projects/" + @.internalLink->slug.current,      @.internalLink->_type == "projects-page" => "/projects",      @.internalLink->_type == "category" => "/categories/" + @.internalLink->slug.current,      "/" + @.internalLink->slug.current    )    }  }
 export type NAVIGATION_QUERYResult = Array<{
   _type: "navigation";
   _key: null;
   links: Array<{
     _key: string;
-    _type: "link";
+    _type: null;
+    title?: string;
+    buttonVariant?: ButtonVariant;
+    target?: boolean;
     isExternal?: boolean;
     internalLink?: {
+      _ref: string;
+      _type: "reference";
+      _weak?: boolean;
+      [internalGroqTypeReferenceTo]?: "category";
+    } | {
       _ref: string;
       _type: "reference";
       _weak?: boolean;
@@ -1446,11 +1751,18 @@ export type NAVIGATION_QUERYResult = Array<{
       _type: "reference";
       _weak?: boolean;
       [internalGroqTypeReferenceTo]?: "post";
+    } | {
+      _ref: string;
+      _type: "reference";
+      _weak?: boolean;
+      [internalGroqTypeReferenceTo]?: "project";
+    } | {
+      _ref: string;
+      _type: "reference";
+      _weak?: boolean;
+      [internalGroqTypeReferenceTo]?: "projects-page";
     };
-    title?: string;
-    href: string | "/" | null;
-    target?: boolean;
-    buttonVariant?: ButtonVariant;
+    href: string | "/" | "/projects" | null;
   }> | null;
 }>;
 
@@ -1577,11 +1889,10 @@ export type PAGE_QUERYResult = {
         _key: string;
         markDefs: null;
       } | {
-        videoId?: string;
+        url: string | null;
         _type: "youtube";
         _key: string;
         markDefs: null;
-        url: null;
       }> | null;
       rating: number | null;
     }> | null;
@@ -1625,6 +1936,58 @@ export type PAGE_QUERYResult = {
           _ref: string;
           _type: "reference";
           _weak?: boolean;
+          [internalGroqTypeReferenceTo]?: "category";
+        } | {
+          _ref: string;
+          _type: "reference";
+          _weak?: boolean;
+          [internalGroqTypeReferenceTo]?: "page";
+        } | {
+          _ref: string;
+          _type: "reference";
+          _weak?: boolean;
+          [internalGroqTypeReferenceTo]?: "post";
+        } | {
+          _ref: string;
+          _type: "reference";
+          _weak?: boolean;
+          [internalGroqTypeReferenceTo]?: "project";
+        } | {
+          _ref: string;
+          _type: "reference";
+          _weak?: boolean;
+          [internalGroqTypeReferenceTo]?: "projects-page";
+        };
+        title?: string;
+        href: string | "/" | "/projects" | null;
+        target?: boolean;
+        buttonVariant?: ButtonVariant;
+      } | null;
+    }> | null;
+  } | {
+    _type: "content-block";
+    _key: string;
+    padding: SectionPadding | null;
+    colorVariant: "accent" | "background" | "card" | "destructive" | "muted" | "primary" | "secondary" | null;
+    sectionWidth: "default" | "narrow" | null;
+    stackAlign: "center" | "left" | null;
+    tagLine: string | null;
+    title: string | null;
+    content: Array<{
+      children?: Array<{
+        marks?: Array<string>;
+        text?: string;
+        _type: "span";
+        _key: string;
+      }>;
+      style?: "blockquote" | "h1" | "h2" | "h3" | "h4" | "normal";
+      listItem?: "bullet" | "number";
+      markDefs: Array<{
+        isExternal?: boolean;
+        internalLink?: {
+          _ref: string;
+          _type: "reference";
+          _weak?: boolean;
           [internalGroqTypeReferenceTo]?: "page";
         } | {
           _ref: string;
@@ -1632,11 +1995,47 @@ export type PAGE_QUERYResult = {
           _weak?: boolean;
           [internalGroqTypeReferenceTo]?: "post";
         };
-        title?: string;
         href: string | "/" | null;
         target?: boolean;
-        buttonVariant?: ButtonVariant;
+        _type: "link";
+        _key: string;
+      }> | null;
+      level?: number;
+      _type: "block";
+      _key: string;
+    } | {
+      _key: string;
+      _type: "code";
+      language?: string;
+      filename?: string;
+      code?: string;
+      highlightedLines?: Array<number>;
+      markDefs: null;
+    } | {
+      asset: {
+        _id: string;
+        url: string | null;
+        mimeType: string | null;
+        metadata: {
+          lqip: string | null;
+          dimensions: {
+            width: number | null;
+            height: number | null;
+          } | null;
+        } | null;
       } | null;
+      media?: unknown;
+      hotspot?: SanityImageHotspot;
+      crop?: SanityImageCrop;
+      alt?: string;
+      _type: "image";
+      _key: string;
+      markDefs: null;
+    } | {
+      url: string | null;
+      _type: "youtube";
+      _key: string;
+      markDefs: null;
     }> | null;
   } | {
     _type: "cta-1";
@@ -1706,11 +2105,10 @@ export type PAGE_QUERYResult = {
       _key: string;
       markDefs: null;
     } | {
-      videoId?: string;
+      url: string | null;
       _type: "youtube";
       _key: string;
       markDefs: null;
-      url: null;
     }> | null;
     links: Array<{
       _key: string;
@@ -1720,15 +2118,30 @@ export type PAGE_QUERYResult = {
         _ref: string;
         _type: "reference";
         _weak?: boolean;
+        [internalGroqTypeReferenceTo]?: "category";
+      } | {
+        _ref: string;
+        _type: "reference";
+        _weak?: boolean;
         [internalGroqTypeReferenceTo]?: "page";
       } | {
         _ref: string;
         _type: "reference";
         _weak?: boolean;
         [internalGroqTypeReferenceTo]?: "post";
+      } | {
+        _ref: string;
+        _type: "reference";
+        _weak?: boolean;
+        [internalGroqTypeReferenceTo]?: "project";
+      } | {
+        _ref: string;
+        _type: "reference";
+        _weak?: boolean;
+        [internalGroqTypeReferenceTo]?: "projects-page";
       };
       title?: string;
-      href: string | "/" | null;
+      href: string | "/" | "/projects" | null;
       target?: boolean;
       buttonVariant?: ButtonVariant;
     }> | null;
@@ -1799,11 +2212,47 @@ export type PAGE_QUERYResult = {
         _key: string;
         markDefs: null;
       } | {
-        videoId?: string;
+        url: string | null;
         _type: "youtube";
         _key: string;
         markDefs: null;
-        url: null;
+      }> | null;
+    }> | null;
+  } | {
+    _type: "featured-projects";
+    _key: string;
+    padding: SectionPadding | null;
+    colorVariant: "accent" | "background" | "card" | "destructive" | "muted" | "primary" | "secondary" | null;
+    title: string | null;
+    showViewAllButton: boolean | null;
+    viewAllButtonText: string | null;
+    viewAllButtonVariant: "default" | "destructive" | "ghost" | "link" | "outline" | "secondary" | null;
+    projects: Array<{
+      title: string | null;
+      slug: Slug | null;
+      excerpt: string | null;
+      image: {
+        asset: {
+          _id: string;
+          url: string | null;
+          mimeType: string | null;
+          metadata: {
+            lqip: string | null;
+            dimensions: {
+              width: number | null;
+              height: number | null;
+            } | null;
+          } | null;
+        } | null;
+        media?: unknown;
+        hotspot?: SanityImageHotspot;
+        crop?: SanityImageCrop;
+        alt?: string;
+        _type: "image";
+      } | null;
+      categories: Array<{
+        title: string | null;
+        slug: Slug | null;
       }> | null;
     }> | null;
   } | {
@@ -1850,15 +2299,30 @@ export type PAGE_QUERYResult = {
           _ref: string;
           _type: "reference";
           _weak?: boolean;
+          [internalGroqTypeReferenceTo]?: "category";
+        } | {
+          _ref: string;
+          _type: "reference";
+          _weak?: boolean;
           [internalGroqTypeReferenceTo]?: "page";
         } | {
           _ref: string;
           _type: "reference";
           _weak?: boolean;
           [internalGroqTypeReferenceTo]?: "post";
+        } | {
+          _ref: string;
+          _type: "reference";
+          _weak?: boolean;
+          [internalGroqTypeReferenceTo]?: "project";
+        } | {
+          _ref: string;
+          _type: "reference";
+          _weak?: boolean;
+          [internalGroqTypeReferenceTo]?: "projects-page";
         };
         title?: string;
-        href: string | "/" | null;
+        href: string | "/" | "/projects" | null;
         target?: boolean;
         buttonVariant?: ButtonVariant;
       }> | null;
@@ -1941,15 +2405,30 @@ export type PAGE_QUERYResult = {
           _ref: string;
           _type: "reference";
           _weak?: boolean;
+          [internalGroqTypeReferenceTo]?: "category";
+        } | {
+          _ref: string;
+          _type: "reference";
+          _weak?: boolean;
           [internalGroqTypeReferenceTo]?: "page";
         } | {
           _ref: string;
           _type: "reference";
           _weak?: boolean;
           [internalGroqTypeReferenceTo]?: "post";
+        } | {
+          _ref: string;
+          _type: "reference";
+          _weak?: boolean;
+          [internalGroqTypeReferenceTo]?: "project";
+        } | {
+          _ref: string;
+          _type: "reference";
+          _weak?: boolean;
+          [internalGroqTypeReferenceTo]?: "projects-page";
         };
         title?: string;
-        href: string | "/" | null;
+        href: string | "/" | "/projects" | null;
         target?: boolean;
         buttonVariant?: ButtonVariant;
       } | null;
@@ -2003,15 +2482,30 @@ export type PAGE_QUERYResult = {
           _ref: string;
           _type: "reference";
           _weak?: boolean;
+          [internalGroqTypeReferenceTo]?: "category";
+        } | {
+          _ref: string;
+          _type: "reference";
+          _weak?: boolean;
           [internalGroqTypeReferenceTo]?: "page";
         } | {
           _ref: string;
           _type: "reference";
           _weak?: boolean;
           [internalGroqTypeReferenceTo]?: "post";
+        } | {
+          _ref: string;
+          _type: "reference";
+          _weak?: boolean;
+          [internalGroqTypeReferenceTo]?: "project";
+        } | {
+          _ref: string;
+          _type: "reference";
+          _weak?: boolean;
+          [internalGroqTypeReferenceTo]?: "projects-page";
         };
         title?: string;
-        href: string | "/" | null;
+        href: string | "/" | "/projects" | null;
         target?: boolean;
         buttonVariant?: ButtonVariant;
       } | null;
@@ -2080,11 +2574,10 @@ export type PAGE_QUERYResult = {
       _key: string;
       markDefs: null;
     } | {
-      videoId?: string;
+      url: string | null;
       _type: "youtube";
       _key: string;
       markDefs: null;
-      url: null;
     }> | null;
     image: {
       asset: {
@@ -2113,15 +2606,30 @@ export type PAGE_QUERYResult = {
         _ref: string;
         _type: "reference";
         _weak?: boolean;
+        [internalGroqTypeReferenceTo]?: "category";
+      } | {
+        _ref: string;
+        _type: "reference";
+        _weak?: boolean;
         [internalGroqTypeReferenceTo]?: "page";
       } | {
         _ref: string;
         _type: "reference";
         _weak?: boolean;
         [internalGroqTypeReferenceTo]?: "post";
+      } | {
+        _ref: string;
+        _type: "reference";
+        _weak?: boolean;
+        [internalGroqTypeReferenceTo]?: "project";
+      } | {
+        _ref: string;
+        _type: "reference";
+        _weak?: boolean;
+        [internalGroqTypeReferenceTo]?: "projects-page";
       };
       title?: string;
-      href: string | "/" | null;
+      href: string | "/" | "/projects" | null;
       target?: boolean;
       buttonVariant?: ButtonVariant;
     }> | null;
@@ -2189,11 +2697,10 @@ export type PAGE_QUERYResult = {
       _key: string;
       markDefs: null;
     } | {
-      videoId?: string;
+      url: string | null;
       _type: "youtube";
       _key: string;
       markDefs: null;
-      url: null;
     }> | null;
     links: Array<{
       _key: string;
@@ -2203,15 +2710,30 @@ export type PAGE_QUERYResult = {
         _ref: string;
         _type: "reference";
         _weak?: boolean;
+        [internalGroqTypeReferenceTo]?: "category";
+      } | {
+        _ref: string;
+        _type: "reference";
+        _weak?: boolean;
         [internalGroqTypeReferenceTo]?: "page";
       } | {
         _ref: string;
         _type: "reference";
         _weak?: boolean;
         [internalGroqTypeReferenceTo]?: "post";
+      } | {
+        _ref: string;
+        _type: "reference";
+        _weak?: boolean;
+        [internalGroqTypeReferenceTo]?: "project";
+      } | {
+        _ref: string;
+        _type: "reference";
+        _weak?: boolean;
+        [internalGroqTypeReferenceTo]?: "projects-page";
       };
       title?: string;
-      href: string | "/" | null;
+      href: string | "/" | "/projects" | null;
       target?: boolean;
       buttonVariant?: ButtonVariant;
     }> | null;
@@ -2247,15 +2769,30 @@ export type PAGE_QUERYResult = {
         _ref: string;
         _type: "reference";
         _weak?: boolean;
+        [internalGroqTypeReferenceTo]?: "category";
+      } | {
+        _ref: string;
+        _type: "reference";
+        _weak?: boolean;
         [internalGroqTypeReferenceTo]?: "page";
       } | {
         _ref: string;
         _type: "reference";
         _weak?: boolean;
         [internalGroqTypeReferenceTo]?: "post";
+      } | {
+        _ref: string;
+        _type: "reference";
+        _weak?: boolean;
+        [internalGroqTypeReferenceTo]?: "project";
+      } | {
+        _ref: string;
+        _type: "reference";
+        _weak?: boolean;
+        [internalGroqTypeReferenceTo]?: "projects-page";
       };
       title?: string;
-      href: string | "/" | null;
+      href: string | "/" | "/projects" | null;
       target?: boolean;
       buttonVariant?: ButtonVariant;
     }> | null;
@@ -2367,11 +2904,10 @@ export type PAGE_QUERYResult = {
           _key: string;
           markDefs: null;
         } | {
-          videoId?: string;
+          url: string | null;
           _type: "youtube";
           _key: string;
           markDefs: null;
-          url: null;
         }> | null;
       }> | null;
     } | {
@@ -2441,11 +2977,10 @@ export type PAGE_QUERYResult = {
         _key: string;
         markDefs: null;
       } | {
-        videoId?: string;
+        url: string | null;
         _type: "youtube";
         _key: string;
         markDefs: null;
-        url: null;
       }> | null;
       link: {
         _key: null;
@@ -2455,15 +2990,30 @@ export type PAGE_QUERYResult = {
           _ref: string;
           _type: "reference";
           _weak?: boolean;
+          [internalGroqTypeReferenceTo]?: "category";
+        } | {
+          _ref: string;
+          _type: "reference";
+          _weak?: boolean;
           [internalGroqTypeReferenceTo]?: "page";
         } | {
           _ref: string;
           _type: "reference";
           _weak?: boolean;
           [internalGroqTypeReferenceTo]?: "post";
+        } | {
+          _ref: string;
+          _type: "reference";
+          _weak?: boolean;
+          [internalGroqTypeReferenceTo]?: "project";
+        } | {
+          _ref: string;
+          _type: "reference";
+          _weak?: boolean;
+          [internalGroqTypeReferenceTo]?: "projects-page";
         };
         title?: string;
-        href: string | "/" | null;
+        href: string | "/" | "/projects" | null;
         target?: boolean;
         buttonVariant?: ButtonVariant;
       } | null;
@@ -2572,11 +3122,10 @@ export type PAGE_QUERYResult = {
           _key: string;
           markDefs: null;
         } | {
-          videoId?: string;
+          url: string | null;
           _type: "youtube";
           _key: string;
           markDefs: null;
-          url: null;
         }> | null;
         tags: Array<string> | null;
       }> | null;
@@ -2684,11 +3233,10 @@ export type PAGE_QUERYResult = {
         _key: string;
         markDefs: null;
       } | {
-        videoId?: string;
+        url: string | null;
         _type: "youtube";
         _key: string;
         markDefs: null;
-        url: null;
       }> | null;
     }> | null;
   }> | null;
@@ -2798,11 +3346,10 @@ export type POST_QUERYResult = {
     _key: string;
     markDefs: null;
   } | {
-    videoId?: string;
+    url: string | null;
     _type: "youtube";
     _key: string;
     markDefs: null;
-    url: null;
   }> | null;
   author: {
     name: string | null;
@@ -2942,15 +3489,30 @@ export type PROJECT_QUERYResult = {
           _ref: string;
           _type: "reference";
           _weak?: boolean;
+          [internalGroqTypeReferenceTo]?: "category";
+        } | {
+          _ref: string;
+          _type: "reference";
+          _weak?: boolean;
           [internalGroqTypeReferenceTo]?: "page";
         } | {
           _ref: string;
           _type: "reference";
           _weak?: boolean;
           [internalGroqTypeReferenceTo]?: "post";
+        } | {
+          _ref: string;
+          _type: "reference";
+          _weak?: boolean;
+          [internalGroqTypeReferenceTo]?: "project";
+        } | {
+          _ref: string;
+          _type: "reference";
+          _weak?: boolean;
+          [internalGroqTypeReferenceTo]?: "projects-page";
         };
         title?: string;
-        href: string | "/" | null;
+        href: string | "/" | "/projects" | null;
         target?: boolean;
         buttonVariant?: ButtonVariant;
       } | null;
@@ -3024,15 +3586,30 @@ export type PROJECT_QUERYResult = {
           _ref: string;
           _type: "reference";
           _weak?: boolean;
+          [internalGroqTypeReferenceTo]?: "category";
+        } | {
+          _ref: string;
+          _type: "reference";
+          _weak?: boolean;
           [internalGroqTypeReferenceTo]?: "page";
         } | {
           _ref: string;
           _type: "reference";
           _weak?: boolean;
           [internalGroqTypeReferenceTo]?: "post";
+        } | {
+          _ref: string;
+          _type: "reference";
+          _weak?: boolean;
+          [internalGroqTypeReferenceTo]?: "project";
+        } | {
+          _ref: string;
+          _type: "reference";
+          _weak?: boolean;
+          [internalGroqTypeReferenceTo]?: "projects-page";
         };
         title?: string;
-        href: string | "/" | null;
+        href: string | "/" | "/projects" | null;
         target?: boolean;
         buttonVariant?: ButtonVariant;
       } | null;
@@ -3086,15 +3663,30 @@ export type PROJECT_QUERYResult = {
           _ref: string;
           _type: "reference";
           _weak?: boolean;
+          [internalGroqTypeReferenceTo]?: "category";
+        } | {
+          _ref: string;
+          _type: "reference";
+          _weak?: boolean;
           [internalGroqTypeReferenceTo]?: "page";
         } | {
           _ref: string;
           _type: "reference";
           _weak?: boolean;
           [internalGroqTypeReferenceTo]?: "post";
+        } | {
+          _ref: string;
+          _type: "reference";
+          _weak?: boolean;
+          [internalGroqTypeReferenceTo]?: "project";
+        } | {
+          _ref: string;
+          _type: "reference";
+          _weak?: boolean;
+          [internalGroqTypeReferenceTo]?: "projects-page";
         };
         title?: string;
-        href: string | "/" | null;
+        href: string | "/" | "/projects" | null;
         target?: boolean;
         buttonVariant?: ButtonVariant;
       } | null;
@@ -3163,11 +3755,10 @@ export type PROJECT_QUERYResult = {
       _key: string;
       markDefs: null;
     } | {
-      videoId?: string;
+      url: string | null;
       _type: "youtube";
       _key: string;
       markDefs: null;
-      url: null;
     }> | null;
     image: {
       asset: {
@@ -3196,15 +3787,30 @@ export type PROJECT_QUERYResult = {
         _ref: string;
         _type: "reference";
         _weak?: boolean;
+        [internalGroqTypeReferenceTo]?: "category";
+      } | {
+        _ref: string;
+        _type: "reference";
+        _weak?: boolean;
         [internalGroqTypeReferenceTo]?: "page";
       } | {
         _ref: string;
         _type: "reference";
         _weak?: boolean;
         [internalGroqTypeReferenceTo]?: "post";
+      } | {
+        _ref: string;
+        _type: "reference";
+        _weak?: boolean;
+        [internalGroqTypeReferenceTo]?: "project";
+      } | {
+        _ref: string;
+        _type: "reference";
+        _weak?: boolean;
+        [internalGroqTypeReferenceTo]?: "projects-page";
       };
       title?: string;
-      href: string | "/" | null;
+      href: string | "/" | "/projects" | null;
       target?: boolean;
       buttonVariant?: ButtonVariant;
     }> | null;
@@ -3290,11 +3896,10 @@ export type PROJECT_QUERYResult = {
           _key: string;
           markDefs: null;
         } | {
-          videoId?: string;
+          url: string | null;
           _type: "youtube";
           _key: string;
           markDefs: null;
-          url: null;
         }> | null;
       }> | null;
     } | {
@@ -3364,11 +3969,10 @@ export type PROJECT_QUERYResult = {
         _key: string;
         markDefs: null;
       } | {
-        videoId?: string;
+        url: string | null;
         _type: "youtube";
         _key: string;
         markDefs: null;
-        url: null;
       }> | null;
       link: {
         _key: null;
@@ -3378,15 +3982,30 @@ export type PROJECT_QUERYResult = {
           _ref: string;
           _type: "reference";
           _weak?: boolean;
+          [internalGroqTypeReferenceTo]?: "category";
+        } | {
+          _ref: string;
+          _type: "reference";
+          _weak?: boolean;
           [internalGroqTypeReferenceTo]?: "page";
         } | {
           _ref: string;
           _type: "reference";
           _weak?: boolean;
           [internalGroqTypeReferenceTo]?: "post";
+        } | {
+          _ref: string;
+          _type: "reference";
+          _weak?: boolean;
+          [internalGroqTypeReferenceTo]?: "project";
+        } | {
+          _ref: string;
+          _type: "reference";
+          _weak?: boolean;
+          [internalGroqTypeReferenceTo]?: "projects-page";
         };
         title?: string;
-        href: string | "/" | null;
+        href: string | "/" | "/projects" | null;
         target?: boolean;
         buttonVariant?: ButtonVariant;
       } | null;
@@ -3495,11 +4114,10 @@ export type PROJECT_QUERYResult = {
           _key: string;
           markDefs: null;
         } | {
-          videoId?: string;
+          url: string | null;
           _type: "youtube";
           _key: string;
           markDefs: null;
-          url: null;
         }> | null;
         tags: Array<string> | null;
       }> | null;
@@ -3571,17 +4189,16 @@ export type PROJECT_QUERYResult = {
         _key: string;
         markDefs: null;
       } | {
-        videoId?: string;
+        url: string | null;
         _type: "youtube";
         _key: string;
         markDefs: null;
-        url: null;
       }> | null;
     }> | null;
   } | {}> | null;
   categories: Array<{
     title: string | null;
-    slug: null;
+    slug: Slug | null;
   }> | null;
   _createdAt: string;
   _updatedAt: string;
@@ -3628,7 +4245,7 @@ export type PROJECTS_QUERYResult = Array<{
   } | null;
   categories: Array<{
     title: string | null;
-    slug: null;
+    slug: Slug | null;
   }> | null;
 }>;
 // Variable: PROJECTS_PAGINATED_QUERY
@@ -3659,7 +4276,7 @@ export type PROJECTS_PAGINATED_QUERYResult = {
     } | null;
     categories: Array<{
       title: string | null;
-      slug: null;
+      slug: Slug | null;
     }> | null;
   }>;
   total: number;
@@ -3673,11 +4290,48 @@ export type PROJECTS_SLUGS_QUERYResult = Array<{
 // Source: ./sanity/queries/projects-page.ts
 // Variable: PROJECTS_PAGE_QUERY
 // Query: *[_type == "projects-page"][0]{  title,  subtitle,  heroImage{      ...,  asset->{    _id,    url,    mimeType,    metadata {      lqip,      dimensions {        width,        height      }    }  }  },  meta_title,  meta_description,  noindex,  ogImage {    asset->{      _id,      url,      metadata {        dimensions {          width,          height        }      }    },  }}
-export type PROJECTS_PAGE_QUERYResult = null;
+export type PROJECTS_PAGE_QUERYResult = {
+  title: string | null;
+  subtitle: string | null;
+  heroImage: {
+    asset: {
+      _id: string;
+      url: string | null;
+      mimeType: string | null;
+      metadata: {
+        lqip: string | null;
+        dimensions: {
+          width: number | null;
+          height: number | null;
+        } | null;
+      } | null;
+    } | null;
+    media?: unknown;
+    hotspot?: SanityImageHotspot;
+    crop?: SanityImageCrop;
+    alt?: string;
+    _type: "image";
+  } | null;
+  meta_title: string | null;
+  meta_description: string | null;
+  noindex: boolean | null;
+  ogImage: {
+    asset: {
+      _id: string;
+      url: string | null;
+      metadata: {
+        dimensions: {
+          width: number | null;
+          height: number | null;
+        } | null;
+      } | null;
+    } | null;
+  } | null;
+} | null;
 
 // Source: ./sanity/queries/settings.ts
 // Variable: SETTINGS_QUERY
-// Query: *[_type == "settings"][0]{  _type,  siteName,  logo{    dark{      ...,      asset->{        _id,        url,        mimeType,        metadata {          lqip,          dimensions {            width,            height          }        }      }    },    light{      ...,      asset->{        _id,        url,        mimeType,        metadata {          lqip,          dimensions {            width,            height          }        }      }    },    width,    height,  },  footerLinks[]{        _key,    ...,    "href": select(      isExternal => href,      defined(href) && !defined(internalLink) => href,      @.internalLink->slug.current == "index" => "/",      @.internalLink->_type == "post" => "/blog/" + @.internalLink->slug.current,      @.internalLink->_type == "project" => "/projects/" + @.internalLink->slug.current,      @.internalLink->_type == "projects-page" => "/projects",      @.internalLink->_type == "category" => "/categories/" + @.internalLink->slug.current,      "/" + @.internalLink->slug.current    )  },  socialLinks[]{    _key,    _type,    platform,    url  },  copyright,  projectsPerPage}
+// Query: *[_type == "settings"][0]{  _type,  siteName,  logo{    dark{      ...,      asset->{        _id,        url,        mimeType,        metadata {          lqip,          dimensions {            width,            height          }        }      }    },    light{      ...,      asset->{        _id,        url,        mimeType,        metadata {          lqip,          dimensions {            width,            height          }        }      }    },    width,    height,  },  menuPosition,  headerButtons[]{    _key,    _type,    title,    buttonVariant,    target,        _key,    ...,    "href": select(      isExternal => href,      defined(href) && !defined(internalLink) => href,      @.internalLink->slug.current == "index" => "/",      @.internalLink->_type == "post" => "/blog/" + @.internalLink->slug.current,      @.internalLink->_type == "project" => "/projects/" + @.internalLink->slug.current,      @.internalLink->_type == "projects-page" => "/projects",      @.internalLink->_type == "category" => "/categories/" + @.internalLink->slug.current,      "/" + @.internalLink->slug.current    )  },  footerLinks[]{        _key,    ...,    "href": select(      isExternal => href,      defined(href) && !defined(internalLink) => href,      @.internalLink->slug.current == "index" => "/",      @.internalLink->_type == "post" => "/blog/" + @.internalLink->slug.current,      @.internalLink->_type == "project" => "/projects/" + @.internalLink->slug.current,      @.internalLink->_type == "projects-page" => "/projects",      @.internalLink->_type == "category" => "/categories/" + @.internalLink->slug.current,      "/" + @.internalLink->slug.current    )  },  socialLinks[]{    _key,    _type,    platform,    url  },  copyright,  projectsPerPage}
 export type SETTINGS_QUERYResult = {
   _type: "settings";
   siteName: string | null;
@@ -3721,10 +4375,85 @@ export type SETTINGS_QUERYResult = {
     width: number | null;
     height: number | null;
   } | null;
-  footerLinks: null;
-  socialLinks: null;
+  menuPosition: "center" | "left" | "right" | null;
+  headerButtons: Array<{
+    _key: string;
+    _type: null;
+    title?: string;
+    buttonVariant?: ButtonVariant;
+    target?: boolean;
+    isExternal?: boolean;
+    internalLink?: {
+      _ref: string;
+      _type: "reference";
+      _weak?: boolean;
+      [internalGroqTypeReferenceTo]?: "category";
+    } | {
+      _ref: string;
+      _type: "reference";
+      _weak?: boolean;
+      [internalGroqTypeReferenceTo]?: "page";
+    } | {
+      _ref: string;
+      _type: "reference";
+      _weak?: boolean;
+      [internalGroqTypeReferenceTo]?: "post";
+    } | {
+      _ref: string;
+      _type: "reference";
+      _weak?: boolean;
+      [internalGroqTypeReferenceTo]?: "project";
+    } | {
+      _ref: string;
+      _type: "reference";
+      _weak?: boolean;
+      [internalGroqTypeReferenceTo]?: "projects-page";
+    };
+    href: string | "/" | "/projects" | null;
+  }> | null;
+  footerLinks: Array<{
+    _key: string;
+    _type: "link";
+    isExternal?: boolean;
+    internalLink?: {
+      _ref: string;
+      _type: "reference";
+      _weak?: boolean;
+      [internalGroqTypeReferenceTo]?: "category";
+    } | {
+      _ref: string;
+      _type: "reference";
+      _weak?: boolean;
+      [internalGroqTypeReferenceTo]?: "page";
+    } | {
+      _ref: string;
+      _type: "reference";
+      _weak?: boolean;
+      [internalGroqTypeReferenceTo]?: "post";
+    } | {
+      _ref: string;
+      _type: "reference";
+      _weak?: boolean;
+      [internalGroqTypeReferenceTo]?: "project";
+    } | {
+      _ref: string;
+      _type: "reference";
+      _weak?: boolean;
+      [internalGroqTypeReferenceTo]?: "projects-page";
+    };
+    title?: string;
+    href: string | "/" | "/projects" | null;
+    target?: boolean;
+    buttonVariant?: ButtonVariant;
+  }> | null;
+  socialLinks: Array<{
+    _key: string;
+    _type: "social-link";
+    platform: "behance" | "devto" | "discord" | "dribbble" | "facebook" | "github" | "instagram" | "linkedin" | "medium" | "stackoverflow" | "tiktok" | "twitch" | "x" | "youtube" | null;
+    url: string | null;
+  }> | null;
   copyright: BlockContent | null;
-  projectsPerPage: null;
+  projectsPerPage: number | null;
 } | null;
 
 // Query TypeMap
@@ -3736,7 +4465,7 @@ declare module "@sanity/client" {
     "*[_type == \"category\" && slug.current == $slug][0]{\n  title,\n  slug,\n  description,\n  image{\n    \n  ...,\n  asset->{\n    _id,\n    url,\n    mimeType,\n    metadata {\n      lqip,\n      dimensions {\n        width,\n        height\n      }\n    }\n  }\n\n  },\n  meta_title,\n  meta_description,\n  noindex,\n  ogImage {\n    asset->{\n      _id,\n      url,\n      metadata {\n        dimensions {\n          width,\n          height\n        }\n      }\n    },\n  }\n}": CATEGORY_QUERYResult;
     "{\n  \"category\": *[_type == \"category\" && slug.current == $slug][0]{\n    title,\n    slug,\n    description,\n    image{\n      \n  ...,\n  asset->{\n    _id,\n    url,\n    mimeType,\n    metadata {\n      lqip,\n      dimensions {\n        width,\n        height\n      }\n    }\n  }\n\n    },\n    meta_title,\n    meta_description,\n    noindex,\n    ogImage {\n      asset->{\n        _id,\n        url,\n        metadata {\n          dimensions {\n            width,\n            height\n          }\n        }\n      },\n    }\n  },\n  \"projects\": *[_type == \"project\" && defined(slug) && references(*[_type == \"category\" && slug.current == $slug][0]._id)] | order(_createdAt desc) [$start...$end]{\n    title,\n    slug,\n    excerpt,\n    image{\n      \n  ...,\n  asset->{\n    _id,\n    url,\n    mimeType,\n    metadata {\n      lqip,\n      dimensions {\n        width,\n        height\n      }\n    }\n  }\n\n    },\n    categories[]->{\n      title,\n      slug\n    },\n  },\n  \"total\": count(*[_type == \"project\" && defined(slug) && references(*[_type == \"category\" && slug.current == $slug][0]._id)]),\n  \"firstProjectImage\": *[_type == \"project\" && defined(slug) && references(*[_type == \"category\" && slug.current == $slug][0]._id)] | order(_createdAt desc) [0].image{\n    \n  ...,\n  asset->{\n    _id,\n    url,\n    mimeType,\n    metadata {\n      lqip,\n      dimensions {\n        width,\n        height\n      }\n    }\n  }\n\n  }\n}": CATEGORY_PROJECTS_PAGINATED_QUERYResult;
     "*[_type == \"category\" && defined(slug)]{slug}": CATEGORIES_SLUGS_QUERYResult;
-    "\n  *[_type == \"navigation\"]{\n    _type,\n    _key,\n    links[]{\n      \n    _key,\n    ...,\n    \"href\": select(\n      isExternal => href,\n      defined(href) && !defined(internalLink) => href,\n      @.internalLink->slug.current == \"index\" => \"/\",\n      @.internalLink->_type == \"post\" => \"/blog/\" + @.internalLink->slug.current,\n      @.internalLink->_type == \"project\" => \"/projects/\" + @.internalLink->slug.current,\n      @.internalLink->_type == \"projects-page\" => \"/projects\",\n      @.internalLink->_type == \"category\" => \"/categories/\" + @.internalLink->slug.current,\n      \"/\" + @.internalLink->slug.current\n    )\n\n    }\n  }\n": NAVIGATION_QUERYResult;
+    "\n  *[_type == \"navigation\"]{\n    _type,\n    _key,\n    links[]{\n      _key,\n      _type,\n      title,\n      buttonVariant,\n      target,\n      \n    _key,\n    ...,\n    \"href\": select(\n      isExternal => href,\n      defined(href) && !defined(internalLink) => href,\n      @.internalLink->slug.current == \"index\" => \"/\",\n      @.internalLink->_type == \"post\" => \"/blog/\" + @.internalLink->slug.current,\n      @.internalLink->_type == \"project\" => \"/projects/\" + @.internalLink->slug.current,\n      @.internalLink->_type == \"projects-page\" => \"/projects\",\n      @.internalLink->_type == \"category\" => \"/categories/\" + @.internalLink->slug.current,\n      \"/\" + @.internalLink->slug.current\n    )\n\n    }\n  }\n": NAVIGATION_QUERYResult;
     "\n  *[_type == \"page\" && slug.current == $slug][0]{\n    blocks[]{\n      \n  _type == \"hero-1\" => {\n    _type,\n    _key,\n    tagLine,\n    title,\n    body[]{\n      \n  ...,\n  markDefs[]{\n    ...,\n    _type == \"link\" => {\n      \n    _key,\n    ...,\n    \"href\": select(\n      isExternal => href,\n      defined(href) && !defined(internalLink) => href,\n      @.internalLink->slug.current == \"index\" => \"/\",\n      @.internalLink->_type == \"post\" => \"/blog/\" + @.internalLink->slug.current,\n      @.internalLink->_type == \"project\" => \"/projects/\" + @.internalLink->slug.current,\n      @.internalLink->_type == \"projects-page\" => \"/projects\",\n      @.internalLink->_type == \"category\" => \"/categories/\" + @.internalLink->slug.current,\n      \"/\" + @.internalLink->slug.current\n    )\n\n    }\n  },\n  _type == \"image\" => {\n    \n  ...,\n  asset->{\n    _id,\n    url,\n    mimeType,\n    metadata {\n      lqip,\n      dimensions {\n        width,\n        height\n      }\n    }\n  }\n\n  },\n  _type == \"youtube\" => {\n    _type,\n    url\n  }\n\n    },\n    image{\n      \n  ...,\n  asset->{\n    _id,\n    url,\n    mimeType,\n    metadata {\n      lqip,\n      dimensions {\n        width,\n        height\n      }\n    }\n  }\n\n    },\n    links[]{\n      \n    _key,\n    ...,\n    \"href\": select(\n      isExternal => href,\n      defined(href) && !defined(internalLink) => href,\n      @.internalLink->slug.current == \"index\" => \"/\",\n      @.internalLink->_type == \"post\" => \"/blog/\" + @.internalLink->slug.current,\n      @.internalLink->_type == \"project\" => \"/projects/\" + @.internalLink->slug.current,\n      @.internalLink->_type == \"projects-page\" => \"/projects\",\n      @.internalLink->_type == \"category\" => \"/categories/\" + @.internalLink->slug.current,\n      \"/\" + @.internalLink->slug.current\n    )\n\n    },\n  }\n,\n      \n  _type == \"hero-2\" => {\n    _type,\n    _key,\n    tagLine,\n    title,\n    body[]{\n      \n  ...,\n  markDefs[]{\n    ...,\n    _type == \"link\" => {\n      \n    _key,\n    ...,\n    \"href\": select(\n      isExternal => href,\n      defined(href) && !defined(internalLink) => href,\n      @.internalLink->slug.current == \"index\" => \"/\",\n      @.internalLink->_type == \"post\" => \"/blog/\" + @.internalLink->slug.current,\n      @.internalLink->_type == \"project\" => \"/projects/\" + @.internalLink->slug.current,\n      @.internalLink->_type == \"projects-page\" => \"/projects\",\n      @.internalLink->_type == \"category\" => \"/categories/\" + @.internalLink->slug.current,\n      \"/\" + @.internalLink->slug.current\n    )\n\n    }\n  },\n  _type == \"image\" => {\n    \n  ...,\n  asset->{\n    _id,\n    url,\n    mimeType,\n    metadata {\n      lqip,\n      dimensions {\n        width,\n        height\n      }\n    }\n  }\n\n  },\n  _type == \"youtube\" => {\n    _type,\n    url\n  }\n\n    },\n    links[]{\n      \n    _key,\n    ...,\n    \"href\": select(\n      isExternal => href,\n      defined(href) && !defined(internalLink) => href,\n      @.internalLink->slug.current == \"index\" => \"/\",\n      @.internalLink->_type == \"post\" => \"/blog/\" + @.internalLink->slug.current,\n      @.internalLink->_type == \"project\" => \"/projects/\" + @.internalLink->slug.current,\n      @.internalLink->_type == \"projects-page\" => \"/projects\",\n      @.internalLink->_type == \"category\" => \"/categories/\" + @.internalLink->slug.current,\n      \"/\" + @.internalLink->slug.current\n    )\n\n    },\n  }\n,\n      \n  _type == \"hero-3\" => {\n    _type,\n    _key,\n    backgroundImage{\n      \n  ...,\n  asset->{\n    _id,\n    url,\n    mimeType,\n    metadata {\n      lqip,\n      dimensions {\n        width,\n        height\n      }\n    }\n  }\n\n    },\n    title,\n    description,\n    links[]{\n      \n    _key,\n    ...,\n    \"href\": select(\n      isExternal => href,\n      defined(href) && !defined(internalLink) => href,\n      @.internalLink->slug.current == \"index\" => \"/\",\n      @.internalLink->_type == \"post\" => \"/blog/\" + @.internalLink->slug.current,\n      @.internalLink->_type == \"project\" => \"/projects/\" + @.internalLink->slug.current,\n      @.internalLink->_type == \"projects-page\" => \"/projects\",\n      @.internalLink->_type == \"category\" => \"/categories/\" + @.internalLink->slug.current,\n      \"/\" + @.internalLink->slug.current\n    )\n\n    },\n  }\n,\n      \n  _type == \"section-header\" => {\n    _type,\n    _key,\n    padding,\n    colorVariant,\n    sectionWidth,\n    stackAlign,\n    tagLine,\n    title,\n    description,\n    link{\n      \n    _key,\n    ...,\n    \"href\": select(\n      isExternal => href,\n      defined(href) && !defined(internalLink) => href,\n      @.internalLink->slug.current == \"index\" => \"/\",\n      @.internalLink->_type == \"post\" => \"/blog/\" + @.internalLink->slug.current,\n      @.internalLink->_type == \"project\" => \"/projects/\" + @.internalLink->slug.current,\n      @.internalLink->_type == \"projects-page\" => \"/projects\",\n      @.internalLink->_type == \"category\" => \"/categories/\" + @.internalLink->slug.current,\n      \"/\" + @.internalLink->slug.current\n    )\n\n    },\n  }\n,\n      \n  _type == \"split-row\" => {\n    _type,\n    _key,\n    padding,\n    colorVariant,\n    noGap,\n    splitColumns[]{\n      \n  _type == \"split-content\" => {\n    _type,\n    _key,\n    sticky,\n    padding,\n    colorVariant,\n    tagLine,\n    title,\n    body[]{\n      \n  ...,\n  markDefs[]{\n    ...,\n    _type == \"link\" => {\n      \n    _key,\n    ...,\n    \"href\": select(\n      isExternal => href,\n      defined(href) && !defined(internalLink) => href,\n      @.internalLink->slug.current == \"index\" => \"/\",\n      @.internalLink->_type == \"post\" => \"/blog/\" + @.internalLink->slug.current,\n      @.internalLink->_type == \"project\" => \"/projects/\" + @.internalLink->slug.current,\n      @.internalLink->_type == \"projects-page\" => \"/projects\",\n      @.internalLink->_type == \"category\" => \"/categories/\" + @.internalLink->slug.current,\n      \"/\" + @.internalLink->slug.current\n    )\n\n    }\n  },\n  _type == \"image\" => {\n    \n  ...,\n  asset->{\n    _id,\n    url,\n    mimeType,\n    metadata {\n      lqip,\n      dimensions {\n        width,\n        height\n      }\n    }\n  }\n\n  },\n  _type == \"youtube\" => {\n    _type,\n    url\n  }\n\n    },\n    link{\n      \n    _key,\n    ...,\n    \"href\": select(\n      isExternal => href,\n      defined(href) && !defined(internalLink) => href,\n      @.internalLink->slug.current == \"index\" => \"/\",\n      @.internalLink->_type == \"post\" => \"/blog/\" + @.internalLink->slug.current,\n      @.internalLink->_type == \"project\" => \"/projects/\" + @.internalLink->slug.current,\n      @.internalLink->_type == \"projects-page\" => \"/projects\",\n      @.internalLink->_type == \"category\" => \"/categories/\" + @.internalLink->slug.current,\n      \"/\" + @.internalLink->slug.current\n    )\n\n    },\n  }\n,\n      \n  _type == \"split-cards-list\" => {\n    _type,\n    _key,\n    list[]{\n      tagLine,\n      title,\n      body[]{\n        \n  ...,\n  markDefs[]{\n    ...,\n    _type == \"link\" => {\n      \n    _key,\n    ...,\n    \"href\": select(\n      isExternal => href,\n      defined(href) && !defined(internalLink) => href,\n      @.internalLink->slug.current == \"index\" => \"/\",\n      @.internalLink->_type == \"post\" => \"/blog/\" + @.internalLink->slug.current,\n      @.internalLink->_type == \"project\" => \"/projects/\" + @.internalLink->slug.current,\n      @.internalLink->_type == \"projects-page\" => \"/projects\",\n      @.internalLink->_type == \"category\" => \"/categories/\" + @.internalLink->slug.current,\n      \"/\" + @.internalLink->slug.current\n    )\n\n    }\n  },\n  _type == \"image\" => {\n    \n  ...,\n  asset->{\n    _id,\n    url,\n    mimeType,\n    metadata {\n      lqip,\n      dimensions {\n        width,\n        height\n      }\n    }\n  }\n\n  },\n  _type == \"youtube\" => {\n    _type,\n    url\n  }\n\n      },\n    },\n  }\n,\n      \n  _type == \"split-image\" => {\n    _type,\n    _key,\n    image{\n      \n  ...,\n  asset->{\n    _id,\n    url,\n    mimeType,\n    metadata {\n      lqip,\n      dimensions {\n        width,\n        height\n      }\n    }\n  }\n\n    },\n  }\n,\n      \n  _type == \"split-info-list\" => {\n    _type,\n    _key,\n    list[]{\n      image{\n        \n  ...,\n  asset->{\n    _id,\n    url,\n    mimeType,\n    metadata {\n      lqip,\n      dimensions {\n        width,\n        height\n      }\n    }\n  }\n\n      },\n      title,\n      body[]{\n        \n  ...,\n  markDefs[]{\n    ...,\n    _type == \"link\" => {\n      \n    _key,\n    ...,\n    \"href\": select(\n      isExternal => href,\n      defined(href) && !defined(internalLink) => href,\n      @.internalLink->slug.current == \"index\" => \"/\",\n      @.internalLink->_type == \"post\" => \"/blog/\" + @.internalLink->slug.current,\n      @.internalLink->_type == \"project\" => \"/projects/\" + @.internalLink->slug.current,\n      @.internalLink->_type == \"projects-page\" => \"/projects\",\n      @.internalLink->_type == \"category\" => \"/categories/\" + @.internalLink->slug.current,\n      \"/\" + @.internalLink->slug.current\n    )\n\n    }\n  },\n  _type == \"image\" => {\n    \n  ...,\n  asset->{\n    _id,\n    url,\n    mimeType,\n    metadata {\n      lqip,\n      dimensions {\n        width,\n        height\n      }\n    }\n  }\n\n  },\n  _type == \"youtube\" => {\n    _type,\n    url\n  }\n\n      },\n      tags[],\n    },\n  }\n,\n    },\n  }\n,\n      \n  _type == \"grid-row\" => {\n    _type,\n    _key,\n    padding,\n    colorVariant,\n    gridColumns,\n    columns[]{\n      \n  _type == \"grid-card\" => {\n    _type,\n    _key,\n    title,\n    excerpt,\n    image{\n      \n  ...,\n  asset->{\n    _id,\n    url,\n    mimeType,\n    metadata {\n      lqip,\n      dimensions {\n        width,\n        height\n      }\n    }\n  }\n\n    },\n    link{\n      \n    _key,\n    ...,\n    \"href\": select(\n      isExternal => href,\n      defined(href) && !defined(internalLink) => href,\n      @.internalLink->slug.current == \"index\" => \"/\",\n      @.internalLink->_type == \"post\" => \"/blog/\" + @.internalLink->slug.current,\n      @.internalLink->_type == \"project\" => \"/projects/\" + @.internalLink->slug.current,\n      @.internalLink->_type == \"projects-page\" => \"/projects\",\n      @.internalLink->_type == \"category\" => \"/categories/\" + @.internalLink->slug.current,\n      \"/\" + @.internalLink->slug.current\n    )\n\n    },\n  }\n,\n      \n  _type == \"pricing-card\" => {\n    _type,\n    _key,\n    title,\n    tagLine,\n    price,\n    list[],\n    excerpt,\n    link{\n      \n    _key,\n    ...,\n    \"href\": select(\n      isExternal => href,\n      defined(href) && !defined(internalLink) => href,\n      @.internalLink->slug.current == \"index\" => \"/\",\n      @.internalLink->_type == \"post\" => \"/blog/\" + @.internalLink->slug.current,\n      @.internalLink->_type == \"project\" => \"/projects/\" + @.internalLink->slug.current,\n      @.internalLink->_type == \"projects-page\" => \"/projects\",\n      @.internalLink->_type == \"category\" => \"/categories/\" + @.internalLink->slug.current,\n      \"/\" + @.internalLink->slug.current\n    )\n\n    },\n  }\n,\n      \n  _type == \"grid-post\" => {\n    _type,\n    _key,\n    post->{\n      title,\n      slug,\n      excerpt,\n      image{\n        \n  ...,\n  asset->{\n    _id,\n    url,\n    mimeType,\n    metadata {\n      lqip,\n      dimensions {\n        width,\n        height\n      }\n    }\n  }\n\n      },\n      categories[]->{\n        _id,\n        title,\n      },\n    },\n  }\n,\n    },\n  }\n,\n      \n  _type == \"carousel-1\" => {\n    _type,\n    _key,\n    padding,\n    colorVariant,\n    size,\n    orientation,\n    indicators,\n    images[]{\n      \n  ...,\n  asset->{\n    _id,\n    url,\n    mimeType,\n    metadata {\n      lqip,\n      dimensions {\n        width,\n        height\n      }\n    }\n  }\n\n    },\n  }\n,\n      \n  _type == \"carousel-2\" => {\n    _type,\n    _key,\n    padding,\n    colorVariant,\n    testimonial[]->{\n      _id,\n      name,\n      title,\n      image{\n        \n  ...,\n  asset->{\n    _id,\n    url,\n    mimeType,\n    metadata {\n      lqip,\n      dimensions {\n        width,\n        height\n      }\n    }\n  }\n\n      },\n      body[]{\n        \n  ...,\n  markDefs[]{\n    ...,\n    _type == \"link\" => {\n      \n    _key,\n    ...,\n    \"href\": select(\n      isExternal => href,\n      defined(href) && !defined(internalLink) => href,\n      @.internalLink->slug.current == \"index\" => \"/\",\n      @.internalLink->_type == \"post\" => \"/blog/\" + @.internalLink->slug.current,\n      @.internalLink->_type == \"project\" => \"/projects/\" + @.internalLink->slug.current,\n      @.internalLink->_type == \"projects-page\" => \"/projects\",\n      @.internalLink->_type == \"category\" => \"/categories/\" + @.internalLink->slug.current,\n      \"/\" + @.internalLink->slug.current\n    )\n\n    }\n  },\n  _type == \"image\" => {\n    \n  ...,\n  asset->{\n    _id,\n    url,\n    mimeType,\n    metadata {\n      lqip,\n      dimensions {\n        width,\n        height\n      }\n    }\n  }\n\n  },\n  _type == \"youtube\" => {\n    _type,\n    url\n  }\n\n      },\n      rating,\n    },\n  }\n,\n      \n  _type == \"carousel-gallery\" => {\n    _type,\n    _key,\n    padding,\n    colorVariant,\n    heading,\n    demoUrl,\n    demoText,\n    items[]{\n      \n  _type == \"carousel-gallery-item\" => {\n    _type,\n    _key,\n    title,\n    summary,\n    image{\n      \n  ...,\n  asset->{\n    _id,\n    url,\n    mimeType,\n    metadata {\n      lqip,\n      dimensions {\n        width,\n        height\n      }\n    }\n  }\n\n    },\n    link{\n      \n    _key,\n    ...,\n    \"href\": select(\n      isExternal => href,\n      defined(href) && !defined(internalLink) => href,\n      @.internalLink->slug.current == \"index\" => \"/\",\n      @.internalLink->_type == \"post\" => \"/blog/\" + @.internalLink->slug.current,\n      @.internalLink->_type == \"project\" => \"/projects/\" + @.internalLink->slug.current,\n      @.internalLink->_type == \"projects-page\" => \"/projects\",\n      @.internalLink->_type == \"category\" => \"/categories/\" + @.internalLink->slug.current,\n      \"/\" + @.internalLink->slug.current\n    )\n\n    },\n  }\n,\n    },\n  }\n,\n      \n  _type == \"timeline-row\" => {\n    _type,\n    _key,\n    padding,\n    colorVariant,\n    timelines[]{\n      title,\n      tagLine,\n      body[]{\n        \n  ...,\n  markDefs[]{\n    ...,\n    _type == \"link\" => {\n      \n    _key,\n    ...,\n    \"href\": select(\n      isExternal => href,\n      defined(href) && !defined(internalLink) => href,\n      @.internalLink->slug.current == \"index\" => \"/\",\n      @.internalLink->_type == \"post\" => \"/blog/\" + @.internalLink->slug.current,\n      @.internalLink->_type == \"project\" => \"/projects/\" + @.internalLink->slug.current,\n      @.internalLink->_type == \"projects-page\" => \"/projects\",\n      @.internalLink->_type == \"category\" => \"/categories/\" + @.internalLink->slug.current,\n      \"/\" + @.internalLink->slug.current\n    )\n\n    }\n  },\n  _type == \"image\" => {\n    \n  ...,\n  asset->{\n    _id,\n    url,\n    mimeType,\n    metadata {\n      lqip,\n      dimensions {\n        width,\n        height\n      }\n    }\n  }\n\n  },\n  _type == \"youtube\" => {\n    _type,\n    url\n  }\n\n      },\n    },\n  }\n,\n      \n  _type == \"cta-1\" => {\n    _type,\n    _key,\n    padding,\n    colorVariant,\n    sectionWidth,\n    stackAlign,\n    tagLine,\n    title,\n    body[]{\n      \n  ...,\n  markDefs[]{\n    ...,\n    _type == \"link\" => {\n      \n    _key,\n    ...,\n    \"href\": select(\n      isExternal => href,\n      defined(href) && !defined(internalLink) => href,\n      @.internalLink->slug.current == \"index\" => \"/\",\n      @.internalLink->_type == \"post\" => \"/blog/\" + @.internalLink->slug.current,\n      @.internalLink->_type == \"project\" => \"/projects/\" + @.internalLink->slug.current,\n      @.internalLink->_type == \"projects-page\" => \"/projects\",\n      @.internalLink->_type == \"category\" => \"/categories/\" + @.internalLink->slug.current,\n      \"/\" + @.internalLink->slug.current\n    )\n\n    }\n  },\n  _type == \"image\" => {\n    \n  ...,\n  asset->{\n    _id,\n    url,\n    mimeType,\n    metadata {\n      lqip,\n      dimensions {\n        width,\n        height\n      }\n    }\n  }\n\n  },\n  _type == \"youtube\" => {\n    _type,\n    url\n  }\n\n    },\n    links[]{\n      \n    _key,\n    ...,\n    \"href\": select(\n      isExternal => href,\n      defined(href) && !defined(internalLink) => href,\n      @.internalLink->slug.current == \"index\" => \"/\",\n      @.internalLink->_type == \"post\" => \"/blog/\" + @.internalLink->slug.current,\n      @.internalLink->_type == \"project\" => \"/projects/\" + @.internalLink->slug.current,\n      @.internalLink->_type == \"projects-page\" => \"/projects\",\n      @.internalLink->_type == \"category\" => \"/categories/\" + @.internalLink->slug.current,\n      \"/\" + @.internalLink->slug.current\n    )\n\n    },\n  }\n,\n      \n  _type == \"logo-cloud-1\" => {\n    _type,\n    _key,\n    padding,\n    colorVariant,\n    title,\n    images[]{\n      \n  ...,\n  asset->{\n    _id,\n    url,\n    mimeType,\n    metadata {\n      lqip,\n      dimensions {\n        width,\n        height\n      }\n    }\n  }\n\n    },\n  }\n,\n      \n  _type == \"faqs\" => {\n    _type,\n    _key,\n    padding,\n    colorVariant,\n    faqs[]->{\n      _id,\n      title,\n      body[]{\n        \n  ...,\n  markDefs[]{\n    ...,\n    _type == \"link\" => {\n      \n    _key,\n    ...,\n    \"href\": select(\n      isExternal => href,\n      defined(href) && !defined(internalLink) => href,\n      @.internalLink->slug.current == \"index\" => \"/\",\n      @.internalLink->_type == \"post\" => \"/blog/\" + @.internalLink->slug.current,\n      @.internalLink->_type == \"project\" => \"/projects/\" + @.internalLink->slug.current,\n      @.internalLink->_type == \"projects-page\" => \"/projects\",\n      @.internalLink->_type == \"category\" => \"/categories/\" + @.internalLink->slug.current,\n      \"/\" + @.internalLink->slug.current\n    )\n\n    }\n  },\n  _type == \"image\" => {\n    \n  ...,\n  asset->{\n    _id,\n    url,\n    mimeType,\n    metadata {\n      lqip,\n      dimensions {\n        width,\n        height\n      }\n    }\n  }\n\n  },\n  _type == \"youtube\" => {\n    _type,\n    url\n  }\n\n      },\n    },\n  }\n,\n      \n  _type == \"form-newsletter\" => {\n    _type,\n    _key,\n    padding,\n    colorVariant,\n    stackAlign,\n    consentText,\n    buttonText,\n    successMessage,\n  }\n,\n      \n  _type == \"all-posts\" => {\n    _type,\n    _key,\n    padding,\n    colorVariant,\n  }\n,\n      \n  _type == \"featured-projects\" => {\n    _type,\n    _key,\n    padding,\n    colorVariant,\n    title,\n    showViewAllButton,\n    viewAllButtonText,\n    viewAllButtonVariant,\n    projects[]->{\n      title,\n      slug,\n      excerpt,\n      image{\n        \n  ...,\n  asset->{\n    _id,\n    url,\n    mimeType,\n    metadata {\n      lqip,\n      dimensions {\n        width,\n        height\n      }\n    }\n  }\n\n      },\n      categories[]->{\n        title,\n        slug\n      },\n    },\n  }\n,\n      \n  _type == \"gallery-lightbox\" => {\n    _type,\n    _key,\n    padding,\n    colorVariant,\n    tagLine,\n    title,\n    description,\n    columns,\n    spacing,\n    images[]{\n      \n  ...,\n  asset->{\n    _id,\n    url,\n    mimeType,\n    metadata {\n      lqip,\n      dimensions {\n        width,\n        height\n      }\n    }\n  }\n,\n      caption,\n    },\n  }\n,\n      \n  _type == \"features-cards\" => {\n    _type,\n    _key,\n    padding,\n    colorVariant,\n    tagLine,\n    title,\n    description,\n    layout,\n    cards[]{\n      \n  _type == \"features-card\" => {\n    _type,\n    _key,\n    mediaType,\n    image{\n      \n  ...,\n  asset->{\n    _id,\n    url,\n    mimeType,\n    metadata {\n      lqip,\n      dimensions {\n        width,\n        height\n      }\n    }\n  }\n\n    },\n    icon,\n    tagLine,\n    title,\n    description,\n    links[]{\n      \n    _key,\n    ...,\n    \"href\": select(\n      isExternal => href,\n      defined(href) && !defined(internalLink) => href,\n      @.internalLink->slug.current == \"index\" => \"/\",\n      @.internalLink->_type == \"post\" => \"/blog/\" + @.internalLink->slug.current,\n      @.internalLink->_type == \"project\" => \"/projects/\" + @.internalLink->slug.current,\n      @.internalLink->_type == \"projects-page\" => \"/projects\",\n      @.internalLink->_type == \"category\" => \"/categories/\" + @.internalLink->slug.current,\n      \"/\" + @.internalLink->slug.current\n    )\n\n    },\n  }\n\n    },\n  }\n,\n      \n  _type == \"team-1\" => {\n    _type,\n    _key,\n    padding,\n    colorVariant,\n    heading,\n    description,\n    members[]{\n      _key,\n      name,\n      role,\n      avatar{\n        \n  ...,\n  asset->{\n    _id,\n    url,\n    mimeType,\n    metadata {\n      lqip,\n      dimensions {\n        width,\n        height\n      }\n    }\n  }\n\n      },\n      socialLinks[]{\n        \n  _key,\n  platform,\n  url\n\n      },\n    },\n  }\n,\n      \n  _type == \"content-block\" => {\n    _type,\n    _key,\n    padding,\n    colorVariant,\n    sectionWidth,\n    stackAlign,\n    tagLine,\n    title,\n    content[]{\n      \n  ...,\n  markDefs[]{\n    ...,\n    _type == \"link\" => {\n      \n    _key,\n    ...,\n    \"href\": select(\n      isExternal => href,\n      defined(href) && !defined(internalLink) => href,\n      @.internalLink->slug.current == \"index\" => \"/\",\n      @.internalLink->_type == \"post\" => \"/blog/\" + @.internalLink->slug.current,\n      @.internalLink->_type == \"project\" => \"/projects/\" + @.internalLink->slug.current,\n      @.internalLink->_type == \"projects-page\" => \"/projects\",\n      @.internalLink->_type == \"category\" => \"/categories/\" + @.internalLink->slug.current,\n      \"/\" + @.internalLink->slug.current\n    )\n\n    }\n  },\n  _type == \"image\" => {\n    \n  ...,\n  asset->{\n    _id,\n    url,\n    mimeType,\n    metadata {\n      lqip,\n      dimensions {\n        width,\n        height\n      }\n    }\n  }\n\n  },\n  _type == \"youtube\" => {\n    _type,\n    url\n  }\n\n    },\n  }\n,\n    },\n    meta_title,\n    meta_description,\n    noindex,\n    ogImage {\n      asset->{\n        _id,\n        url,\n        metadata {\n          dimensions {\n            width,\n            height\n          }\n        }\n      },\n    }\n  }\n": PAGE_QUERYResult;
     "*[_type == \"page\" && defined(slug)]{slug}": PAGES_SLUGS_QUERYResult;
     "*[_type == \"post\" && slug.current == $slug][0]{\n    title,\n    slug,\n    image{\n      \n  ...,\n  asset->{\n    _id,\n    url,\n    mimeType,\n    metadata {\n      lqip,\n      dimensions {\n        width,\n        height\n      }\n    }\n  }\n\n    },\n    body[]{\n      \n  ...,\n  markDefs[]{\n    ...,\n    _type == \"link\" => {\n      \n    _key,\n    ...,\n    \"href\": select(\n      isExternal => href,\n      defined(href) && !defined(internalLink) => href,\n      @.internalLink->slug.current == \"index\" => \"/\",\n      @.internalLink->_type == \"post\" => \"/blog/\" + @.internalLink->slug.current,\n      @.internalLink->_type == \"project\" => \"/projects/\" + @.internalLink->slug.current,\n      @.internalLink->_type == \"projects-page\" => \"/projects\",\n      @.internalLink->_type == \"category\" => \"/categories/\" + @.internalLink->slug.current,\n      \"/\" + @.internalLink->slug.current\n    )\n\n    }\n  },\n  _type == \"image\" => {\n    \n  ...,\n  asset->{\n    _id,\n    url,\n    mimeType,\n    metadata {\n      lqip,\n      dimensions {\n        width,\n        height\n      }\n    }\n  }\n\n  },\n  _type == \"youtube\" => {\n    _type,\n    url\n  }\n\n    },\n    author->{\n      name,\n      image {\n        ...,\n        asset->{\n          _id,\n          url,\n          mimeType,\n          metadata {\n            lqip,\n            dimensions {\n              width,\n              height\n            }\n          }\n        },\n        alt\n      }\n    },\n    _createdAt,\n    _updatedAt,\n    meta_title,\n    meta_description,\n    noindex,\n    ogImage {\n      asset->{\n        _id,\n        url,\n        metadata {\n          dimensions {\n            width,\n            height\n          }\n        }\n      },\n    }\n}": POST_QUERYResult;
@@ -3747,6 +4476,6 @@ declare module "@sanity/client" {
     "{\n  \"projects\": *[_type == \"project\" && defined(slug)] | order(_createdAt desc) [$start...$end]{\n    title,\n    slug,\n    excerpt,\n    image{\n      \n  ...,\n  asset->{\n    _id,\n    url,\n    mimeType,\n    metadata {\n      lqip,\n      dimensions {\n        width,\n        height\n      }\n    }\n  }\n\n    },\n    categories[]->{\n      title,\n      slug\n    },\n  },\n  \"total\": count(*[_type == \"project\" && defined(slug)])\n}": PROJECTS_PAGINATED_QUERYResult;
     "*[_type == \"project\" && defined(slug)]{slug}": PROJECTS_SLUGS_QUERYResult;
     "*[_type == \"projects-page\"][0]{\n  title,\n  subtitle,\n  heroImage{\n    \n  ...,\n  asset->{\n    _id,\n    url,\n    mimeType,\n    metadata {\n      lqip,\n      dimensions {\n        width,\n        height\n      }\n    }\n  }\n\n  },\n  meta_title,\n  meta_description,\n  noindex,\n  ogImage {\n    asset->{\n      _id,\n      url,\n      metadata {\n        dimensions {\n          width,\n          height\n        }\n      }\n    },\n  }\n}": PROJECTS_PAGE_QUERYResult;
-    "*[_type == \"settings\"][0]{\n  _type,\n  siteName,\n  logo{\n    dark{\n      ...,\n      asset->{\n        _id,\n        url,\n        mimeType,\n        metadata {\n          lqip,\n          dimensions {\n            width,\n            height\n          }\n        }\n      }\n    },\n    light{\n      ...,\n      asset->{\n        _id,\n        url,\n        mimeType,\n        metadata {\n          lqip,\n          dimensions {\n            width,\n            height\n          }\n        }\n      }\n    },\n    width,\n    height,\n  },\n  footerLinks[]{\n    \n    _key,\n    ...,\n    \"href\": select(\n      isExternal => href,\n      defined(href) && !defined(internalLink) => href,\n      @.internalLink->slug.current == \"index\" => \"/\",\n      @.internalLink->_type == \"post\" => \"/blog/\" + @.internalLink->slug.current,\n      @.internalLink->_type == \"project\" => \"/projects/\" + @.internalLink->slug.current,\n      @.internalLink->_type == \"projects-page\" => \"/projects\",\n      @.internalLink->_type == \"category\" => \"/categories/\" + @.internalLink->slug.current,\n      \"/\" + @.internalLink->slug.current\n    )\n\n  },\n  socialLinks[]{\n    _key,\n    _type,\n    platform,\n    url\n  },\n  copyright,\n  projectsPerPage\n}": SETTINGS_QUERYResult;
+    "*[_type == \"settings\"][0]{\n  _type,\n  siteName,\n  logo{\n    dark{\n      ...,\n      asset->{\n        _id,\n        url,\n        mimeType,\n        metadata {\n          lqip,\n          dimensions {\n            width,\n            height\n          }\n        }\n      }\n    },\n    light{\n      ...,\n      asset->{\n        _id,\n        url,\n        mimeType,\n        metadata {\n          lqip,\n          dimensions {\n            width,\n            height\n          }\n        }\n      }\n    },\n    width,\n    height,\n  },\n  menuPosition,\n  headerButtons[]{\n    _key,\n    _type,\n    title,\n    buttonVariant,\n    target,\n    \n    _key,\n    ...,\n    \"href\": select(\n      isExternal => href,\n      defined(href) && !defined(internalLink) => href,\n      @.internalLink->slug.current == \"index\" => \"/\",\n      @.internalLink->_type == \"post\" => \"/blog/\" + @.internalLink->slug.current,\n      @.internalLink->_type == \"project\" => \"/projects/\" + @.internalLink->slug.current,\n      @.internalLink->_type == \"projects-page\" => \"/projects\",\n      @.internalLink->_type == \"category\" => \"/categories/\" + @.internalLink->slug.current,\n      \"/\" + @.internalLink->slug.current\n    )\n\n  },\n  footerLinks[]{\n    \n    _key,\n    ...,\n    \"href\": select(\n      isExternal => href,\n      defined(href) && !defined(internalLink) => href,\n      @.internalLink->slug.current == \"index\" => \"/\",\n      @.internalLink->_type == \"post\" => \"/blog/\" + @.internalLink->slug.current,\n      @.internalLink->_type == \"project\" => \"/projects/\" + @.internalLink->slug.current,\n      @.internalLink->_type == \"projects-page\" => \"/projects\",\n      @.internalLink->_type == \"category\" => \"/categories/\" + @.internalLink->slug.current,\n      \"/\" + @.internalLink->slug.current\n    )\n\n  },\n  socialLinks[]{\n    _key,\n    _type,\n    platform,\n    url\n  },\n  copyright,\n  projectsPerPage\n}": SETTINGS_QUERYResult;
   }
 }

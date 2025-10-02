@@ -13,6 +13,10 @@ export default defineType({
       default: true,
     },
     {
+      name: 'header',
+      title: 'Header',
+    },
+    {
       name: 'footer',
       title: 'Footer',
     },
@@ -66,6 +70,97 @@ export default defineType({
       initialValue: 10,
       validation: (Rule) =>
         Rule.required().min(1).max(50).error('Must be between 1 and 50'),
+    }),
+    defineField({
+      name: 'menuPosition',
+      type: 'string',
+      title: 'Menu Position',
+      group: 'header',
+      description: 'Position of the navigation menu in the header',
+      options: {
+        list: [
+          { title: 'Left', value: 'left' },
+          { title: 'Center', value: 'center' },
+          { title: 'Right', value: 'right' },
+        ],
+        layout: 'radio',
+      },
+      initialValue: 'left',
+    }),
+    defineField({
+      name: 'headerButtons',
+      type: 'array',
+      title: 'Header Buttons',
+      group: 'header',
+      description: 'Buttons to display on the right side of the header',
+      of: [
+        {
+          type: 'object',
+          fields: [
+            defineField({
+              name: 'isExternal',
+              type: 'boolean',
+              title: 'Is External',
+              initialValue: false,
+            }),
+            defineField({
+              name: 'internalLink',
+              type: 'reference',
+              title: 'Internal Link',
+              to: [
+                { type: 'page' },
+                { type: 'post' },
+                { type: 'project' },
+                { type: 'projects-page' },
+                { type: 'category' },
+              ],
+              hidden: ({ parent }) => parent?.isExternal,
+            }),
+            defineField({
+              name: 'title',
+              type: 'string',
+              validation: (Rule) =>
+                Rule.required().error('Button title is required'),
+            }),
+            defineField({
+              name: 'href',
+              title: 'URL',
+              type: 'url',
+              hidden: ({ parent }) => !parent?.isExternal,
+              validation: (Rule) =>
+                Rule.uri({
+                  allowRelative: true,
+                  scheme: ['http', 'https', 'mailto', 'tel'],
+                }),
+            }),
+            defineField({
+              name: 'target',
+              type: 'boolean',
+              title: 'Open in new tab',
+              initialValue: false,
+              hidden: ({ parent }) => !parent?.isExternal,
+            }),
+            defineField({
+              name: 'buttonVariant',
+              type: 'button-variant',
+              title: 'Button Style',
+              initialValue: 'default',
+            }),
+          ],
+          preview: {
+            select: {
+              title: 'title',
+              variant: 'buttonVariant',
+            },
+            prepare({ title, variant }) {
+              return {
+                title: title || 'Untitled button',
+                subtitle: variant || 'default',
+              };
+            },
+          },
+        },
+      ],
     }),
     defineField({
       name: 'footerLinks',

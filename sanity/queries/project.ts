@@ -56,6 +56,26 @@ export const PROJECTS_QUERY = groq`*[_type == "project" && defined(slug)] | orde
     image{
       ${imageQuery}
     },
+    categories[]->{
+      title,
+      slug
+    },
+}`;
+
+export const PROJECTS_PAGINATED_QUERY = groq`{
+  "projects": *[_type == "project" && defined(slug)] | order(_createdAt desc) [$start...$end]{
+    title,
+    slug,
+    excerpt,
+    image{
+      ${imageQuery}
+    },
+    categories[]->{
+      title,
+      slug
+    },
+  },
+  "total": count(*[_type == "project" && defined(slug)])
 }`;
 
 export const PROJECTS_SLUGS_QUERY = groq`*[_type == "project" && defined(slug)]{slug}`;

@@ -68,6 +68,15 @@ export const structure = (S: any, context: any) =>
       }),
       S.divider({ title: 'Global' }),
       S.listItem()
+        .title('Projects Page')
+        .icon(FolderKanban)
+        .child(
+          S.editor()
+            .id('projects-page')
+            .schemaType('projects-page')
+            .documentId('projects-page')
+        ),
+      S.listItem()
         .title('Navigation')
         .icon(Menu)
         .child(

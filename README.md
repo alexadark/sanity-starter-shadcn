@@ -104,6 +104,45 @@ To use the newsletter form, you need to configure Resend.
 3. Copy the [audience](https://resend.com/audiences) id
 4. Set the API key and audience ID in the Vercel project settings or in the `.env.local` file
 
+### Generate Alt Tags with AI (optional)
+
+This template includes an AI-powered tool to automatically generate alt text for images using OpenAI's vision API.
+
+#### Setup
+
+1. Create an [OpenAI account](https://platform.openai.com/signup)
+2. Generate an [API key](https://platform.openai.com/api-keys)
+3. Add the API key to your `.env.local` file:
+
+```bash
+OPENAI_API_KEY=your_openai_api_key_here
+```
+
+#### Usage
+
+When editing any document with images in Sanity Studio:
+
+1. Upload an image
+2. In the image settings, you'll see the "Alternative Text" field
+3. Click the **"Generate with AI"** button below the input field
+4. The AI will analyze the image and automatically fill in descriptive alt text
+5. Review and edit the generated text if needed
+6. Save the document
+
+**Features:**
+
+- **Inline Generation:** Click "Generate with AI" button in any image field
+- **Bulk Tool:** View ALL images without alt text across your entire site
+- **Comprehensive Coverage:** Finds images in documents, blocks, galleries, carousels, and all nested structures
+- **Smart Filtering:** Only shows images without alt tags, auto-refreshes after generation
+- **Cost-Effective:** Uses GPT-4o-mini with `detail: 'low'` (~85 tokens per image)
+
+**Best Practices:**
+
+- Use the **inline "Generate with AI"** button for images in galleries and blocks (saves automatically)
+- Use the **"Generate Alt Tags" tool** for bulk processing of document-level images
+- The bulk tool shows all images for reference, but complex images (galleries/blocks) should use the inline button
+
 ## Sanity TypeGen
 
 To generate the types, run the following command:
@@ -132,8 +171,9 @@ All environment variables and their descriptions:
 - `NEXT_PUBLIC_SANITY_PROJECT_ID` - your Sanity project ID. For example, abc12345.
 - `NEXT_PUBLIC_SANITY_DATASET` - your Sanity dataset name. For example, production.
 - `SANITY_API_READ_TOKEN` - your Sanity read token for Next.js to fetch data.
-- `RESEND_API_KEY` - your RESEND api key for the newsletter form.
-- `RESEND_AUDIENCE_ID` - your RESEND audience id for the newsletter form to store contacts.
+- `RESEND_API_KEY` - (optional) your RESEND api key for the newsletter form.
+- `RESEND_AUDIENCE_ID` - (optional) your RESEND audience id for the newsletter form to store contacts.
+- `OPENAI_API_KEY` - (optional) your OpenAI API key for the Generate Alt Tags tool.
 
 ## Examples
 

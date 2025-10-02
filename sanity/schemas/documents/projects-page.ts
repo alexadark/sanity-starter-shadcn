@@ -1,5 +1,6 @@
 import { defineField, defineType } from 'sanity';
 import { FolderKanban } from 'lucide-react';
+import { altTextField } from '../blocks/shared/alt-text-field';
 
 export default defineType({
   name: 'projects-page',
@@ -41,13 +42,7 @@ export default defineType({
       options: {
         hotspot: true,
       },
-      fields: [
-        {
-          name: 'alt',
-          type: 'string',
-          title: 'Alternative Text',
-        },
-      ],
+      fields: [altTextField],
     }),
     defineField({
       name: 'meta_title',

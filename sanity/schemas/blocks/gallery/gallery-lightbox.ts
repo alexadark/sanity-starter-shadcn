@@ -1,6 +1,7 @@
 import { defineField, defineType } from 'sanity';
 import { ImageIcon } from 'lucide-react';
 import { COLS_VARIANTS } from '../shared/layout-variants';
+import { altTextField } from '../shared/alt-text-field';
 
 export default defineType({
   name: 'gallery-lightbox',
@@ -68,12 +69,7 @@ export default defineType({
             accept: 'image/*',
           },
           fields: [
-            defineField({
-              name: 'alt',
-              type: 'string',
-              title: 'Alt Text',
-              description: 'Important for SEO and accessibility',
-            }),
+            altTextField,
             defineField({
               name: 'caption',
               type: 'string',

@@ -4,6 +4,7 @@ import {
   SHOWCASE_BLOCKS,
   createBlocksField,
 } from '../blocks/shared/block-configs';
+import { altTextField } from '../blocks/shared/alt-text-field';
 
 export default defineType({
   name: 'project',
@@ -59,13 +60,7 @@ export default defineType({
       options: {
         hotspot: true,
       },
-      fields: [
-        {
-          name: 'alt',
-          type: 'string',
-          title: 'Alternative Text',
-        },
-      ],
+      fields: [altTextField],
       validation: (Rule) => Rule.required().error('Featured image is required'),
     }),
     defineField({

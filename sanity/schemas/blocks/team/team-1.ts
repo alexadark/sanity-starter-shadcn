@@ -1,5 +1,6 @@
 import { defineField, defineType, defineArrayMember } from 'sanity';
 import { Users } from 'lucide-react';
+import { altTextField } from '../shared/alt-text-field';
 
 export default defineType({
   name: 'team-1',
@@ -46,13 +47,7 @@ export default defineType({
               options: {
                 hotspot: true,
               },
-              fields: [
-                {
-                  name: 'alt',
-                  type: 'string',
-                  title: 'Alternative Text',
-                },
-              ],
+              fields: [altTextField],
             }),
             defineField({
               name: 'socialLinks',

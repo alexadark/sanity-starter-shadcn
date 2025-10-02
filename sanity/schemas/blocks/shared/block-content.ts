@@ -1,6 +1,7 @@
 import { defineType, defineArrayMember } from 'sanity';
 import { SquarePlay } from 'lucide-react';
 import { YouTubePreview } from '@/sanity/schemas/previews/youtube-preview';
+import { altTextField } from './alt-text-field';
 
 export default defineType({
   title: 'Block Content',
@@ -72,13 +73,7 @@ export default defineType({
     defineArrayMember({
       type: 'image',
       options: { hotspot: true },
-      fields: [
-        {
-          name: 'alt',
-          type: 'string',
-          title: 'Alternative Text',
-        },
-      ],
+      fields: [altTextField],
     }),
     defineArrayMember({
       name: 'youtube',

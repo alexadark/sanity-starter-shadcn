@@ -1,5 +1,6 @@
 import { defineField, defineType } from 'sanity';
 import { FileText } from 'lucide-react';
+import { altTextField } from '../blocks/shared/alt-text-field';
 
 export default defineType({
   name: 'blog-page',
@@ -40,13 +41,7 @@ export default defineType({
       options: {
         hotspot: true,
       },
-      fields: [
-        {
-          name: 'alt',
-          type: 'string',
-          title: 'Alternative Text',
-        },
-      ],
+      fields: [altTextField],
     }),
     defineField({
       name: 'meta_title',

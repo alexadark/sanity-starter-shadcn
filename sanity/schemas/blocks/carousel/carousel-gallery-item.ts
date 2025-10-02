@@ -1,5 +1,6 @@
 import { defineField, defineType } from 'sanity';
 import { ImageIcon } from 'lucide-react';
+import { altTextField } from '../shared/alt-text-field';
 
 export default defineType({
   name: 'carousel-gallery-item',
@@ -24,13 +25,7 @@ export default defineType({
       options: {
         hotspot: true,
       },
-      fields: [
-        {
-          name: 'alt',
-          type: 'string',
-          title: 'Alternative Text',
-        },
-      ],
+      fields: [altTextField],
       validation: (rule) =>
         rule.required().error('Image is required for carousel gallery items'),
     }),

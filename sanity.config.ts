@@ -20,6 +20,7 @@ import { resolve } from '@/sanity/presentation/resolve';
 import { structure } from './sanity/structure';
 import { codeInput } from '@sanity/code-input';
 import { bulkPublishTool } from './sanity/plugins/bulk-publish';
+import { generateAltTagsTool } from './sanity/plugins/generate-alt-tags';
 
 // Define the actions that should be available for singleton documents
 const singletonActions = new Set([
@@ -71,5 +72,6 @@ export default defineConfig({
     unsplashImageAsset(),
     lucideIconPicker(),
     bulkPublishTool(),
+    generateAltTagsTool(),
   ],
 });

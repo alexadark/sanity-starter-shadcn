@@ -1,5 +1,6 @@
 import { defineField, defineType } from 'sanity';
 import { Square } from 'lucide-react';
+import { altTextField } from '../shared/alt-text-field';
 
 export default defineType({
   name: 'features-card',
@@ -22,13 +23,7 @@ export default defineType({
       name: 'image',
       type: 'image',
       options: { hotspot: true },
-      fields: [
-        {
-          name: 'alt',
-          type: 'string',
-          title: 'Alternative Text',
-        },
-      ],
+      fields: [altTextField],
       hidden: ({ parent }) => parent?.mediaType !== 'image',
     }),
     defineField({

@@ -1,5 +1,6 @@
 import { defineType, defineField, defineArrayMember } from 'sanity';
 import { GitBranch } from 'lucide-react';
+import { altTextField } from '../shared/alt-text-field';
 
 export default defineType({
   name: 'timeline-2',
@@ -63,7 +64,7 @@ export default defineType({
               name: 'image',
               type: 'image',
               options: { hotspot: true },
-              fields: [defineField({ name: 'alt', type: 'string' })],
+              fields: [altTextField],
             }),
             defineField({
               name: 'links',

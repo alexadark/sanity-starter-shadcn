@@ -1,5 +1,6 @@
 import { defineField, defineType } from 'sanity';
 import { LayoutTemplate } from 'lucide-react';
+import { altTextField } from '../shared/alt-text-field';
 
 export default defineType({
   name: 'hero-3',
@@ -12,13 +13,7 @@ export default defineType({
       title: 'Background Image',
       type: 'image',
       options: { hotspot: true },
-      fields: [
-        {
-          name: 'alt',
-          type: 'string',
-          title: 'Alternative Text',
-        },
-      ],
+      fields: [altTextField],
     }),
     defineField({
       name: 'title',

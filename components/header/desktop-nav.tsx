@@ -38,7 +38,7 @@ export default function DesktopNav({
         positionClasses[menuPosition]
       )}
     >
-      <NavigationMenu viewport={false}>
+      <NavigationMenu>
         <NavigationMenuList>
           {navigation[0]?.links?.map((navItem: SanityLink) => {
             if (
@@ -49,7 +49,7 @@ export default function DesktopNav({
               return (
                 <NavigationMenuItem key={navItem._key}>
                   <DropdownTrigger navItem={navItem} />
-                  <NavigationMenuContent className="bg-popover text-popover-foreground">
+                  <NavigationMenuContent>
                     <div className="grid w-[400px] gap-3 p-4">
                       {navItem.subItems.map((subItem) => (
                         <SubMenuLink key={subItem._key} item={subItem} />

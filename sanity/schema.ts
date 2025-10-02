@@ -41,6 +41,7 @@ import carouselGallery from './schemas/blocks/carousel/carousel-gallery';
 import carouselGalleryItem from './schemas/blocks/carousel/carousel-gallery-item';
 import timelineRow from './schemas/blocks/timeline/timeline-row';
 import timelinesOne from './schemas/blocks/timeline/timelines-1';
+import timeline2 from './schemas/blocks/timeline/timeline-2';
 import cta1 from './schemas/blocks/cta/cta-1';
 import logoCloud1 from './schemas/blocks/logo-cloud/logo-cloud-1';
 import faqs from './schemas/blocks/faqs';
@@ -96,6 +97,7 @@ export const schema: { types: SchemaTypeDefinition[] } = {
     carouselGalleryItem,
     timelineRow,
     timelinesOne,
+    timeline2,
     cta1,
     logoCloud1,
     faqs,

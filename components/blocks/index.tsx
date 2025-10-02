@@ -9,6 +9,7 @@ import Carousel1 from '@/components/blocks/carousel/carousel-1';
 import Carousel2 from '@/components/blocks/carousel/carousel-2';
 import CarouselGallery from '@/components/blocks/carousel/carousel-gallery';
 import TimelineRow from '@/components/blocks/timeline/timeline-row';
+import Timeline2 from '@/components/blocks/timeline/timeline-2';
 import Cta1 from '@/components/blocks/cta/cta-1';
 import LogoCloud1 from '@/components/blocks/logo-cloud/logo-cloud-1';
 import FAQs from '@/components/blocks/faqs';
@@ -35,6 +36,7 @@ const componentMap: {
   'carousel-2': Carousel2,
   'carousel-gallery': CarouselGallery,
   'timeline-row': TimelineRow,
+  'timeline-2': Timeline2,
   'cta-1': Cta1,
   'logo-cloud-1': LogoCloud1,
   faqs: FAQs,

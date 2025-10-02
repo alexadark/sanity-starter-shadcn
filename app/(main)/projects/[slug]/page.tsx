@@ -1,4 +1,5 @@
 import Blocks from '@/components/blocks';
+import ProjectHero from '@/components/blocks/project-hero';
 import {
   fetchSanityProjectBySlug,
   fetchSanityProjectsStaticParams,
@@ -40,5 +41,15 @@ export default async function ProjectPage(props: {
     notFound();
   }
 
-  return <Blocks blocks={project?.blocks ?? []} />;
+  return (
+    <>
+      <ProjectHero
+        title={project.title}
+        excerpt={project.excerpt}
+        image={project.image}
+        categories={project.categories}
+      />
+      <Blocks blocks={project?.blocks ?? []} />
+    </>
+  );
 }
